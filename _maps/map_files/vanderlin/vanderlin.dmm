@@ -18234,10 +18234,6 @@
 	icon_state = "weird1"
 	},
 /area/rogue/indoors/town/tavern)
-"mYP" = (
-/obj/structure/ladder,
-/turf/open/floor/rogue/cobble,
-/area/rogue/indoors/town)
 "mZd" = (
 /obj/structure/table/wood/plain_alt,
 /turf/open/floor/rogue/ruinedwood/darker,
@@ -31857,6 +31853,8 @@
 /obj/item/reagent_containers/food/snacks/produce/poppy,
 /obj/item/reagent_containers/food/snacks/produce/poppy,
 /obj/item/reagent_containers/food/snacks/produce/poppy,
+/obj/item/natural/chaff/wheat,
+/obj/item/natural/chaff/wheat,
 /turf/open/floor/rogue/cobble,
 /area/rogue/indoors/town)
 "wPJ" = (
@@ -89325,7 +89323,7 @@ iSk
 rnJ
 wPH
 dkK
-mYP
+dkK
 rnJ
 nlk
 pOK
