@@ -217,14 +217,12 @@
 /turf/open/floor/wood,
 /area/rogue/indoors/town/manor)
 "ahM" = (
-/obj/structure/bed{
-	pixel_y = 2
-	},
-/obj/structure/bed{
-	pixel_y = 11
-	},
 /obj/effect/landmark/start/orphan,
 /obj/machinery/light/fueled/wallfire/candle/r,
+/obj/structure/bed/wool,
+/obj/structure/bed/wool{
+	pixel_y = 12
+	},
 /turf/open/floor/ruinedwood/darker,
 /area/rogue/indoors/town/orphanage)
 "ahZ" = (
@@ -450,6 +448,7 @@
 /obj/structure/chair/wood/alt/chair_noble/purple{
 	dir = 1
 	},
+/obj/effect/landmark/start/courtagent,
 /turf/open/floor/church,
 /area/rogue/indoors/town/manor)
 "ark" = (
@@ -1226,7 +1225,7 @@
 /turf/open/transparent/openspace,
 /area/rogue/outdoors/town)
 "aOs" = (
-/obj/structure/bed/wooldouble,
+/obj/structure/bed/wool/double,
 /obj/item/bedsheet/double_pelt,
 /turf/open/floor/church,
 /area/rogue/indoors/town/church/inquisition)
@@ -2107,7 +2106,7 @@
 /turf/open/floor/church,
 /area/rogue/indoors/town/church)
 "bwq" = (
-/obj/structure/bed,
+/obj/structure/bed/wool,
 /turf/open/floor/blocks{
 	icon_state = "bluestone"
 	},
@@ -4144,11 +4143,11 @@
 /turf/open/floor/woodturned,
 /area/rogue/indoors/butchershop)
 "cRl" = (
-/obj/structure/bed,
 /obj/effect/landmark/start/weaponsmith{
 	dir = 8
 	},
 /obj/machinery/light/fueled/wallfire/candle/r,
+/obj/structure/bed/wool,
 /turf/open/floor/wood,
 /area/rogue/indoors/town/smithy)
 "cRr" = (
@@ -5308,14 +5307,12 @@
 /turf/open/floor/blocks,
 /area/rogue/indoors/town/manor)
 "dPz" = (
-/obj/structure/bed{
-	pixel_y = 2
-	},
-/obj/structure/bed{
-	pixel_y = 11
-	},
 /obj/effect/landmark/start/orphan,
 /obj/machinery/light/fueled/wallfire/candle/l,
+/obj/structure/bed/wool,
+/obj/structure/bed/wool{
+	pixel_y = 12
+	},
 /turf/open/floor/ruinedwood/darker,
 /area/rogue/indoors/town/orphanage)
 "dPH" = (
@@ -10326,6 +10323,10 @@
 	},
 /turf/open/floor/tile,
 /area/rogue/indoors/town/manor)
+"htx" = (
+/obj/structure/train,
+/turf/open/floor/metal,
+/area/rogue/under/town/sewer)
 "htM" = (
 /obj/structure/chair/stool{
 	pixel_y = 5
@@ -11407,10 +11408,10 @@
 /turf/open/floor/carpet,
 /area/rogue/indoors/town)
 "iix" = (
-/obj/structure/bed,
 /obj/effect/landmark/start/weaponsmith{
 	dir = 8
 	},
+/obj/structure/bed/wool,
 /turf/open/floor/ruinedwood{
 	icon_state = "horzw"
 	},
@@ -11800,7 +11801,7 @@
 	pixel_y = 32
 	},
 /obj/effect/decal/cleanable/dirt/dust,
-/obj/structure/bed,
+/obj/structure/bed/wool,
 /turf/open/floor/wood,
 /area/rogue/indoors/town)
 "iwO" = (
@@ -12734,7 +12735,7 @@
 /turf/open/floor/tile/kitchen,
 /area/rogue/indoors/town)
 "jbT" = (
-/obj/structure/bed,
+/obj/structure/bed/hay,
 /turf/open/floor/blocks,
 /area/rogue/indoors/town/cell)
 "jbY" = (
@@ -15075,12 +15076,8 @@
 /turf/open/floor/blocks,
 /area/rogue/under/town/basement)
 "kJK" = (
-/obj/structure/bed/mediocre{
-	pixel_y = 0
-	},
-/obj/item/bedsheet/pelt{
-	pixel_y = 0
-	},
+/obj/structure/bed/mediocre,
+/obj/item/bedsheet/pelt,
 /obj/effect/landmark/start/dungeoneer{
 	dir = 8
 	},
@@ -19045,11 +19042,11 @@
 /turf/open/floor/carpet,
 /area/rogue/under/town/sewer)
 "nMT" = (
-/obj/structure/bed,
 /obj/machinery/light/fueled/wallfire/candle{
 	pixel_x = 32;
 	pixel_y = 0
 	},
+/obj/structure/bed/wool,
 /turf/open/floor/wood,
 /area/rogue/indoors/town/manor)
 "nMZ" = (
@@ -19128,7 +19125,9 @@
 /turf/open/transparent/openspace,
 /area/rogue/indoors/town)
 "nRb" = (
-/obj/structure/fluff/buysign,
+/obj/structure/fluff/buysign{
+	name = "Train to Kingsfield Reinstated"
+	},
 /obj/structure/industrial_lift/tram{
 	icon_state = "vertw"
 	},
@@ -19909,7 +19908,7 @@
 /turf/open/floor/church,
 /area/rogue/indoors/town/church)
 "ozw" = (
-/obj/structure/bed,
+/obj/structure/bed/wool,
 /turf/open/floor/wood,
 /area/rogue/indoors/town/manor)
 "ozI" = (
@@ -21461,12 +21460,12 @@
 /turf/open/floor/woodturned,
 /area/rogue/indoors/butchershop)
 "pLv" = (
-/obj/structure/bed,
 /obj/effect/landmark/start/armorsmith,
 /obj/machinery/light/fueled/wallfire/candle{
 	pixel_x = -32;
 	pixel_y = 0
 	},
+/obj/structure/bed/wool,
 /turf/open/floor/woodturned,
 /area/rogue/indoors/town/smithy)
 "pLB" = (
@@ -22835,13 +22834,11 @@
 /turf/open/floor/carpet/royalblack,
 /area/rogue/indoors/town/manor)
 "qPE" = (
-/obj/structure/bed{
-	pixel_y = 2
-	},
-/obj/structure/bed{
-	pixel_y = 11
-	},
 /obj/effect/landmark/start/orphan,
+/obj/structure/bed/wool,
+/obj/structure/bed/wool{
+	pixel_y = 12
+	},
 /turf/open/floor/ruinedwood/darker,
 /area/rogue/indoors/town/orphanage)
 "qPG" = (
@@ -23872,7 +23869,7 @@
 /turf/open/floor/blocks/stonered/tiny,
 /area/rogue/indoors/town/dwarfin)
 "rEq" = (
-/obj/structure/bed/wooldouble,
+/obj/structure/bed/wool/double,
 /obj/item/bedsheet/double_pelt,
 /turf/open/floor/carpet/purple,
 /area/rogue/indoors/town/steward)
@@ -26752,8 +26749,8 @@
 /turf/open/floor/ruinedwood/chevron,
 /area/rogue/indoors/town/orphanage)
 "tAe" = (
-/obj/structure/fluff/sellsign{
-	name = "TRAIN SERVICE UNAVAILABLE"
+/obj/structure/fluff/buysign{
+	name = "Train to Kingsfield Reinstated"
 	},
 /turf/open/floor/herringbone,
 /area/rogue/under/town/sewer)
@@ -31433,6 +31430,12 @@
 	},
 /turf/open/floor/ruinedwood/spiralfade,
 /area/rogue/indoors/town)
+"wOQ" = (
+/obj/structure/fluff/buysign{
+	name = "Train to Kingsfield Reinstated"
+	},
+/turf/open/floor/blocks,
+/area/rogue/outdoors/town)
 "wOR" = (
 /obj/structure/table/wood/crafted,
 /obj/item/reagent_containers/powder/flour,
@@ -32453,8 +32456,8 @@
 	},
 /area/rogue/under/town/basement)
 "xEN" = (
-/obj/structure/bed,
 /obj/effect/landmark/start/armorsmith,
+/obj/structure/bed/wool,
 /turf/open/floor/woodturned,
 /area/rogue/indoors/town/smithy)
 "xEP" = (
@@ -32722,7 +32725,9 @@
 /turf/open/floor/blocks/newstone/alt,
 /area/rogue/under/town/basement)
 "xOF" = (
-/obj/structure/fluff/buysign,
+/obj/structure/fluff/buysign{
+	name = "Train to Kingsfield Reinstated"
+	},
 /obj/structure/industrial_lift/tram,
 /turf/open/transparent/openspace,
 /area/rogue/outdoors/river)
@@ -58865,7 +58870,7 @@ oGi
 lfU
 lfU
 kDp
-hbV
+htx
 kDp
 qXV
 qXV
@@ -98046,7 +98051,7 @@ lsl
 lsl
 lsl
 lsl
-lsl
+wOQ
 eCc
 iSk
 iSk
