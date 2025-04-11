@@ -125,6 +125,12 @@
 /obj/machinery/light/fueled/hearth,
 /turf/open/floor/blocks/stonered/tiny,
 /area/rogue)
+"bB" = (
+/obj/machinery/light/fueled/torchholder{
+	pixel_y = 26
+	},
+/turf/open/transparent/openspace,
+/area/rogue)
 "bF" = (
 /obj/structure/mineral_door/wood/violet{
 	lockid = "orphanage";
@@ -176,6 +182,12 @@
 /obj/structure/mannequin,
 /obj/effect/decal/cleanable/dirt/cobweb,
 /turf/open/floor/herringbone,
+/area/rogue)
+"cp" = (
+/obj/structure/fluff/customsign{
+	name = "SUBSPACE"
+	},
+/turf/open/floor/naturalstone,
 /area/rogue)
 "cG" = (
 /turf/open/floor/hexstone,
@@ -654,7 +666,15 @@
 /obj/structure/lever{
 	redstone_id = "stewardwarehouse"
 	},
+/obj/machinery/light/fueled/wallfire/candle/blue{
+	pixel_x = 32;
+	pixel_y = 0
+	},
 /turf/open/floor/blocks/bluestone,
+/area/rogue)
+"hp" = (
+/obj/structure/mineral_door/wood/fancywood,
+/turf/open/floor/ruinedwood/turned/darker,
 /area/rogue)
 "hq" = (
 /obj/structure/rack,
@@ -983,6 +1003,13 @@
 	icon_state = "weird1"
 	},
 /area/rogue)
+"me" = (
+/obj/structure/fluff/walldeco/customflag{
+	pixel_y = 32
+	},
+/obj/structure/fluff/statue/knight/r,
+/turf/open/floor/naturalstone,
+/area/rogue)
 "mf" = (
 /obj/structure/bars/passage/shutter/open{
 	redstone_id = "merchantStorage"
@@ -1042,6 +1069,10 @@
 	icon_state = "largetable"
 	},
 /obj/item/weapon/knife/copper,
+/turf/open/floor/ruinedwood/turned/darker,
+/area/rogue)
+"ns" = (
+/obj/structure/rack/shelf/biggest,
 /turf/open/floor/ruinedwood/turned/darker,
 /area/rogue)
 "nz" = (
@@ -1173,6 +1204,13 @@
 	},
 /turf/open/floor/naturalstone,
 /area/rogue)
+"ph" = (
+/obj/machinery/light/fueled/wallfire/candle{
+	pixel_x = -32;
+	pixel_y = 0
+	},
+/turf/open/floor/ruinedwood/turned/darker,
+/area/rogue)
 "pp" = (
 /turf/closed/wall/mineral/wooddark/slitted,
 /area/rogue)
@@ -1258,6 +1296,10 @@
 /obj/structure/chair/wood/alt/chair3,
 /obj/effect/landmark/start/orphan,
 /turf/open/floor/ruinedwood/darker,
+/area/rogue)
+"qS" = (
+/obj/structure/spider/stickyweb,
+/turf/open/floor/wood,
 /area/rogue)
 "qU" = (
 /obj/structure/table/wood/large/corner_new{
@@ -1583,6 +1625,12 @@
 	},
 /turf/open/floor/naturalstone,
 /area/rogue)
+"vn" = (
+/obj/structure/bars,
+/turf/open/floor/tile{
+	icon_state = "greenstone"
+	},
+/area/rogue)
 "vo" = (
 /obj/machinery/light/fueled/wallfire/candle/blue/l,
 /turf/open/floor/cobble,
@@ -1605,6 +1653,15 @@
 	dir = 1
 	},
 /turf/open/floor/hexstone,
+/area/rogue)
+"vO" = (
+/obj/structure/table/wood/plain_alt,
+/obj/item/paper,
+/obj/item/natural/feather{
+	pixel_x = 12;
+	pixel_y = 14
+	},
+/turf/open/floor/ruinedwood/turned/darker,
 /area/rogue)
 "vP" = (
 /obj/item/natural/cloth,
@@ -1953,6 +2010,12 @@
 	},
 /turf/open/floor/ruinedwood/turned/darker,
 /area/rogue)
+"Ab" = (
+/obj/structure/fluff/walldeco/customflag{
+	pixel_y = 32
+	},
+/turf/open/floor/cobble,
+/area/rogue)
 "Ae" = (
 /obj/structure/fermentation_keg/random/water{
 	pixel_x = 10;
@@ -1962,6 +2025,7 @@
 /area/rogue)
 "Ag" = (
 /obj/effect/decal/cleanable/dirt/dust,
+/obj/structure/spider/stickyweb,
 /turf/open/floor/wood,
 /area/rogue)
 "Ai" = (
@@ -2127,6 +2191,10 @@
 	},
 /turf/open/floor/ruinedwood/spiral,
 /area/rogue)
+"BU" = (
+/obj/structure/chair/wood/alt,
+/turf/open/floor/ruinedwood/turned/darker,
+/area/rogue)
 "Ca" = (
 /obj/structure/fluff/railing/border{
 	dir = 1
@@ -2172,6 +2240,11 @@
 /turf/open/floor/blocks{
 	icon_state = "paving"
 	},
+/area/rogue)
+"Cy" = (
+/obj/structure/closet/crate/crafted_closet,
+/obj/item/clothing/cloak/raincloak/green,
+/turf/open/floor/ruinedwood/turned/darker,
 /area/rogue)
 "CB" = (
 /obj/structure/fluff/railing/border{
@@ -2356,6 +2429,14 @@
 /obj/item/paper/scroll,
 /turf/open/floor/greenstone,
 /area/rogue)
+"EV" = (
+/obj/structure/closet/crate/chest/neu,
+/obj/machinery/light/fueled/wallfire/candle/blue{
+	pixel_x = 32;
+	pixel_y = 0
+	},
+/turf/open/floor/blocks/bluestone,
+/area/rogue)
 "Ff" = (
 /obj/structure/table/wood/counter{
 	dir = 4
@@ -2365,6 +2446,12 @@
 	pixel_x = 3
 	},
 /turf/open/floor/ruinedwood/darker,
+/area/rogue)
+"Fj" = (
+/obj/structure/spider/stickyweb,
+/turf/open/floor/tile{
+	icon_state = "greenstone"
+	},
 /area/rogue)
 "Fm" = (
 /obj/structure/table/wood/reinf_long,
@@ -2377,6 +2464,10 @@
 /obj/item/clothing/shoes/nobleboot,
 /obj/item/clothing/shirt/undershirt/black,
 /turf/open/floor/wood,
+/area/rogue)
+"Fs" = (
+/obj/structure/train,
+/turf/open/transparent/openspace,
 /area/rogue)
 "Ft" = (
 /obj/structure/table/wood/plain_alt,
@@ -2476,6 +2567,12 @@
 /turf/open/floor/tile{
 	icon_state = "greenstone"
 	},
+/area/rogue)
+"GF" = (
+/obj/structure/stairs/stone{
+	dir = 1
+	},
+/turf/open/floor/cobble,
 /area/rogue)
 "GH" = (
 /turf/open/floor/carpet/purple,
@@ -3523,6 +3620,12 @@
 /obj/structure/chair/wood/alt/chair3,
 /turf/open/floor/carpet/royalblack,
 /area/rogue)
+"RF" = (
+/obj/machinery/light/fueled/torchholder{
+	dir = 8
+	},
+/turf/open/floor/ruinedwood/turned/darker,
+/area/rogue)
 "RQ" = (
 /obj/effect/decal/cleanable/dirt/dust,
 /obj/structure/bed/mediocre,
@@ -3536,6 +3639,26 @@
 	},
 /obj/item/natural/cloth,
 /obj/item/broom,
+/turf/open/floor/ruinedwood/turned/darker,
+/area/rogue)
+"RU" = (
+/obj/structure/closet/crate/chest/neu,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
+/obj/item/paper,
 /turf/open/floor/ruinedwood/turned/darker,
 /area/rogue)
 "RY" = (
@@ -3979,6 +4102,12 @@
 /obj/machinery/light/fueled/firebowl/standing/blue,
 /turf/open/floor/tile/kitchen,
 /area/rogue)
+"XJ" = (
+/obj/structure/fluff/customsign{
+	name = "WELCOME TO MOUNT SPACESUB"
+	},
+/turf/open/floor/naturalstone,
+/area/rogue)
 "XL" = (
 /obj/machinery/light/fueled/wallfire/candle,
 /turf/open/floor/ruinedwood/turned/darker,
@@ -4091,6 +4220,11 @@
 /obj/item/weapon/knife/dagger/silver,
 /obj/item/weapon/knife/dagger/steel,
 /turf/open/floor/greenstone,
+/area/rogue)
+"ZU" = (
+/obj/structure/rack/shelf/biggest,
+/obj/machinery/light/fueled/wallfire/candle,
+/turf/open/floor/ruinedwood/turned/darker,
 /area/rogue)
 "ZW" = (
 /obj/machinery/light/fueled/campfire,
@@ -40086,11 +40220,11 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
+fn
+fn
+fn
+fn
+fn
 sf
 sf
 sf
@@ -40212,12 +40346,12 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
+Fs
+fn
+fn
+fn
+fn
+fn
 sf
 sf
 sf
@@ -40340,11 +40474,11 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
+fn
+LX
+GF
+fn
+fn
 sf
 sf
 sf
@@ -40467,11 +40601,11 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
+fn
+LX
+GF
+fn
+fn
 sf
 sf
 sf
@@ -40594,11 +40728,11 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
+fn
+LX
+GF
+fn
+fn
 sf
 sf
 sf
@@ -40721,11 +40855,11 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
+fn
+LX
+GF
+fn
+fn
 sf
 sf
 sf
@@ -40848,11 +40982,11 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
+fn
+fn
+fn
+fn
+fn
 sf
 sf
 sf
@@ -40975,11 +41109,11 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
+fn
+fn
+fn
+fn
+fn
 sf
 sf
 sf
@@ -54694,25 +54828,25 @@ Wd
 Wd
 Wd
 Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
 Wd
 Wd
 Wd
@@ -54818,30 +54952,30 @@ Wd
 Wd
 Wd
 Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
+fn
 Wd
 Wd
 sf
@@ -54944,6 +55078,10 @@ Wd
 Wd
 Wd
 Wd
+fn
+fn
+fn
+fn
 Wd
 Wd
 Wd
@@ -54961,15 +55099,11 @@ Wd
 Wd
 Wd
 Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
-Wd
+fn
+fn
+fn
+fn
+fn
 Wd
 Wd
 sf
@@ -55071,9 +55205,9 @@ Wd
 Wd
 Wd
 Wd
-Wd
-Wd
-Wd
+fn
+fn
+fn
 Wd
 Wd
 Wd
@@ -55094,10 +55228,10 @@ Wd
 Wd
 Wd
 Wd
-Wd
-Wd
-Wd
-Wd
+fn
+fn
+fn
+fn
 Wd
 Wd
 fO
@@ -55197,9 +55331,9 @@ Wd
 Wd
 Wd
 Wd
-Wd
-Wd
-Wd
+fn
+fn
+fn
 Wd
 Wd
 Wd
@@ -55222,10 +55356,10 @@ Do
 am
 Wd
 Wd
-Wd
-Wd
-Wd
-Wd
+fn
+fn
+fn
+fn
 Wd
 Wd
 fO
@@ -55318,16 +55452,16 @@ Wd
 Wd
 Wd
 Wd
-GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
+Wd
+Wd
+Wd
+LX
+Wd
+fn
+fn
+fn
+Wd
+Wd
 GK
 GK
 sm
@@ -55351,8 +55485,8 @@ am
 Wd
 Wd
 Wd
-Wd
-Wd
+fn
+fn
 fn
 fn
 Wd
@@ -55444,17 +55578,17 @@ Wd
 GK
 GK
 GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
+LX
+LX
+hp
+LX
+LX
+Uk
+fn
+fn
+fn
+Uk
+Uk
 GK
 wB
 fO
@@ -55480,7 +55614,7 @@ GK
 Wd
 Wd
 Wd
-Wd
+fn
 fn
 fn
 Wd
@@ -55571,17 +55705,17 @@ GK
 GK
 GK
 GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
-GK
+LX
+Cy
+fO
+ph
+LX
+Ab
+Uk
+Uk
+Uk
+Wd
+Wd
 GK
 nE
 dt
@@ -55697,18 +55831,18 @@ GK
 GK
 GK
 GK
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
+GK
+LX
+ns
+fO
+fO
+GR
+fn
+fn
+fn
+fn
+Wd
+Uk
 GK
 Da
 tG
@@ -55824,18 +55958,18 @@ GK
 GK
 GK
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
+GK
+LX
+ZU
+fO
+BU
+GR
+Uk
+fn
+fn
+Uk
+Uk
+Uk
 GK
 sm
 FS
@@ -55951,18 +56085,18 @@ GK
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
+GK
+LX
+ns
+fO
+fO
+GR
+fn
+Uk
+fn
+fn
+Uk
+Uk
 GK
 GK
 GK
@@ -56078,28 +56212,28 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
+GK
+LX
+fO
+fO
+vO
+LX
+me
+Wd
+fn
+Uk
+Uk
+Uk
+Wd
 GK
 GK
-GK
-GK
-GK
-GK
-GK
+Jn
+PQ
+PQ
+Fj
+Fj
+PQ
+Mz
 GK
 GK
 QJ
@@ -56205,28 +56339,28 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
+GK
+LX
+fO
+RF
+RU
+LX
+LX
+XJ
+fn
+fn
+fn
+fn
+MR
 sf
 GK
-GK
-GK
-GK
-GK
-GK
-GK
+PQ
+Jn
+PQ
+PQ
+Fj
+Mz
+Mz
 rP
 rP
 QJ
@@ -56332,23 +56466,23 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
+GK
+LX
+LX
+LX
+LX
+LX
+LX
+cp
+Uk
+fn
+fn
+Uk
+MR
 sf
 GK
-GK
+PQ
+PQ
 GK
 GK
 GK
@@ -56459,23 +56593,23 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
 GK
 GK
+GK
+GK
+GK
+GK
+GK
+GK
+Wd
+fn
+Uk
+fn
+MR
+sf
+GK
+PQ
+PQ
 GK
 GK
 GK
@@ -56592,17 +56726,17 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
 GK
 GK
+GK
+Wd
+Wd
+Uk
+MR
+sf
+GK
+Fj
+VV
 GK
 rP
 rP
@@ -56720,16 +56854,16 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
 GK
 GK
+LX
+Wd
+Wd
+Wd
+GK
+GK
+Mz
+Mz
 rP
 rP
 rP
@@ -56847,16 +56981,16 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
+GK
+QJ
+LX
+LX
+LX
+Uk
 GK
 GK
-GK
+Mz
+Mz
 rP
 rP
 rP
@@ -56974,16 +57108,16 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
 GK
 QJ
-Mz
+bB
+sf
+Uk
+Uk
+GK
+GK
+rP
+rP
 rP
 rP
 rP
@@ -57101,16 +57235,16 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
 GK
 QJ
-Mz
+vn
+vZ
+GK
+GK
+GK
+GK
+rP
+rP
 rP
 rP
 rP
@@ -57228,16 +57362,16 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
 GK
 QJ
+PQ
+PQ
+PQ
+PQ
 Mz
+rP
+rP
+rP
 rP
 rP
 rP
@@ -57355,16 +57489,16 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
 GK
 QJ
+QJ
+PQ
+PQ
+PQ
 Mz
+rP
+rP
+rP
 rP
 rP
 eN
@@ -57482,16 +57616,16 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
-sf
+GK
 GK
 QJ
+QJ
+PQ
+PQ
 Mz
+rP
+rP
+rP
 rP
 rP
 rP
@@ -57610,15 +57744,15 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
-sf
+GK
 GK
 QJ
+QJ
+PQ
 Mz
+rP
+rP
+rP
 rP
 rP
 rP
@@ -57738,14 +57872,14 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
-sf
+GK
 GK
 QJ
-Mz
+QJ
+QJ
+QJ
+QJ
+rP
 rP
 rP
 rP
@@ -57866,10 +58000,10 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
+GK
+GK
+GK
+QJ
 GK
 QJ
 Mz
@@ -57995,8 +58129,8 @@ sf
 sf
 sf
 sf
-sf
-sf
+GK
+GK
 GK
 QJ
 Mz
@@ -61313,11 +61447,11 @@ rP
 Mz
 GK
 wC
-fH
+qS
 am
 am
 am
-Wd
+SM
 Wd
 XX
 wC
@@ -61567,13 +61701,13 @@ MS
 PQ
 GK
 wC
-Wd
+oV
 Ag
 am
 Wd
 xh
 fH
-Wd
+oV
 wC
 GK
 GK
@@ -61811,9 +61945,9 @@ xb
 Cm
 FL
 Cm
-Mp
+uT
 Oe
-Mp
+uT
 ab
 yq
 ab
@@ -61950,10 +62084,10 @@ GK
 wC
 GR
 GR
-Wd
+SM
 wC
 Wd
-Wd
+SM
 am
 wC
 GK
@@ -62062,7 +62196,7 @@ LX
 Wd
 Wd
 xb
-Mp
+uT
 Mp
 aj
 SC
@@ -62070,7 +62204,7 @@ SC
 SC
 Ca
 Mp
-ab
+yq
 gk
 Wd
 GK
@@ -62316,7 +62450,7 @@ Wd
 Wd
 Wd
 xb
-Mp
+uT
 Mp
 aj
 hL
@@ -62324,15 +62458,15 @@ SC
 SC
 Ca
 Mp
-Cm
+FL
 gk
 Wd
 GK
 am
 am
 am
-am
-am
+oV
+Wd
 am
 am
 am
@@ -62458,8 +62592,8 @@ GK
 am
 am
 am
-am
-am
+Wd
+Wd
 am
 am
 am
@@ -62576,7 +62710,7 @@ hj
 uT
 uT
 FL
-Cm
+EV
 CX
 YT
 gk
@@ -62585,8 +62719,8 @@ GK
 am
 am
 am
-am
-am
+Wd
+oV
 am
 am
 am
@@ -62824,8 +62958,8 @@ fn
 fn
 fn
 fn
-Wd
-Wd
+fn
+fn
 Wd
 Wd
 Wd
@@ -78191,7 +78325,7 @@ Bk
 Bk
 GK
 GK
-sf
+Bk
 GK
 GK
 GK
@@ -78318,8 +78452,8 @@ sf
 sf
 sf
 sf
-sf
-sf
+Bk
+Bk
 GK
 GK
 GK
@@ -78445,9 +78579,9 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
+Bk
+Bk
+Bk
 GK
 GK
 GK
@@ -78572,10 +78706,10 @@ sf
 sf
 sf
 sf
-sf
-sf
-sf
-sf
+Bk
+Bk
+Bk
+Bk
 GK
 GK
 GK
