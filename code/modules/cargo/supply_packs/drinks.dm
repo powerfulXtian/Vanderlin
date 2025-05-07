@@ -1,3 +1,4 @@
+/*
 /datum/supply_pack/food/healthpot
 	name = "Healing Potion"
 	cost = 24
@@ -31,6 +32,7 @@
 	name = "Disease Cure Potion"
 	cost = 32
 	contains = /obj/item/reagent_containers/glass/bottle/diseasecure
+*/
 
 /datum/supply_pack/food/water
 	name = "Water Bottle"
