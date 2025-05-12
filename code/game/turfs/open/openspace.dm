@@ -1,52 +1,43 @@
 GLOBAL_DATUM_INIT(openspace_backdrop_one_for_all, /atom/movable/openspace_backdrop, new)
 
 /atom/movable/openspace_backdrop
-	name			= "openspace_backdrop"
-
-	anchored		= TRUE
-
-	icon            = 'icons/turf/floors.dmi'
-	icon_state      = "grey"
-	plane           = OPENSPACE_BACKDROP_PLANE
-	mouse_opacity 	= MOUSE_OPACITY_TRANSPARENT
-	layer           = SPLASHSCREEN_LAYER
-	//I don't know why the others are aligned but I shall do the same.
-	vis_flags		= VIS_INHERIT_ID
-
-/atom/movable/openspace_backdrop/Initialize()
-	. = ..()
-//	filters += filter(type = "blur", size = 3)
+	name = "openspace_backdrop"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "grey"
+	anchored = TRUE
+	plane = OPENSPACE_BACKDROP_PLANE
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	layer = SPLASHSCREEN_LAYER
+	vis_flags = VIS_INHERIT_ID
 
 /turf/open/transparent/openspace
 	name = "open space"
 	desc = "My eyes can see far down below."
-	icon_state = "openspace"
+	icon_state = MAP_SWITCH("openspace", "openspacemap")
 	baseturfs = /turf/open/transparent/openspace
 	CanAtmosPassVertical = ATMOS_PASS_YES
-//	appearance_flags = KEEP_TOGETHER
-	//mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	var/can_cover_up = TRUE
 	var/can_build_on = TRUE
 	dynamic_lighting = 1
-	canSmoothWith = list(/turf/closed/mineral,/turf/closed/wall/mineral, /turf/open/floor)
-	smooth = SMOOTH_MORE
-	neighborlay_override = "staticedge"
 	turf_flags = NONE
-
-/turf/open/transparent/openspace/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
-
-/turf/open/transparent/openspace/smooth(adjacencies)
-	var/list/Yeah = ..()
-	for(var/O in Yeah)
-		var/mutable_appearance/M = mutable_appearance(icon, O)
-		M.layer = SPLASHSCREEN_LAYER + 0.01
-		M.plane = OPENSPACE_BACKDROP_PLANE + 0.01
-		add_overlay(M)
+	path_weight = 500
 
 /turf/open/transparent/openspace/debug/update_multiz()
 	..()
 	return TRUE
+
+/turf/open/transparent/openspace/can_traverse_safely(atom/movable/traveler)
+	var/turf/destination = GET_TURF_BELOW(src)
+	if(!destination)
+		return TRUE // this shouldn't happen
+	for(var/obj/structure/O in contents)
+		if(O.obj_flags & BLOCK_Z_OUT_DOWN)
+			return TRUE
+	if(!traveler.can_zTravel(destination, DOWN, src)) // something is blocking their fall!
+		return TRUE
+	if(!traveler.can_zFall(src, DOWN, destination)) // they can't fall!
+		return TRUE
+	return FALSE
 
 ///No bottom level for openspace.
 /turf/open/transparent/openspace/show_bottom_level()
@@ -127,7 +118,7 @@ GLOBAL_DATUM_INIT(openspace_backdrop_one_for_all, /atom/movable/openspace_backdr
 			if(ismob(pulling))
 				user.pulling.forceMove(target)
 			user.forceMove(target)
-			user.start_pulling(pulling,supress_message = TRUE)
+			user.start_pulling(pulling,suppress_message = TRUE)
 
 /turf/open/transparent/openspace/attack_ghost(mob/dead/observer/user)
 	var/turf/target = get_step_multiz(src, DOWN)

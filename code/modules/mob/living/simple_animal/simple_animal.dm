@@ -8,6 +8,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 	health = 20
 	maxHealth = 20
 	gender = PLURAL //placeholder
+	living_flags = MOVES_ON_ITS_OWN
 
 	status_flags = CANPUSH|CANSLOWDOWN|CANSTUN
 
@@ -186,7 +187,11 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 
 /mob/living/simple_animal/Initialize()
 	. = ..()
-	GLOB.simple_animals[AIStatus] += src
+	if(!(AIStatus in GLOB.simple_animals))
+		GLOB.simple_animals |= "[AIStatus]"
+		GLOB.simple_animals["[AIStatus]"] = list()
+
+	GLOB.simple_animals["[AIStatus]"] += src
 	if(gender == PLURAL)
 		gender = pick(MALE,FEMALE)
 	if(!real_name)
@@ -200,7 +205,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 //		AddComponent(/datum/component/personal_crafting)
 
 /mob/living/simple_animal/Destroy()
-	GLOB.simple_animals[AIStatus] -= src
+	GLOB.simple_animals["[AIStatus]"] -= src
 	if (SSnpcpool.state == SS_PAUSED && LAZYLEN(SSnpcpool.currentrun))
 		SSnpcpool.currentrun -= src
 
@@ -223,7 +228,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 
 /mob/living/simple_animal/attackby(obj/item/O, mob/user, params)
 	if(!stat && istype(O, /obj/item/reagent_containers/glass))
-		if(udder)
+		if(udder && user.used_intent.type == INTENT_FILL)
 			changeNext_move(20) // milking sound length
 			udder.milkAnimal(O, user)
 			return TRUE
@@ -256,7 +261,29 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 /mob/living/simple_animal/proc/tamed(mob/user)
 	INVOKE_ASYNC(src, PROC_REF(emote), "lower_head", null, null, null, TRUE)
 	tame = TRUE
-	befriend(user)
+	if(user)
+		befriend(user)
+		SEND_SIGNAL(user, COMSIG_ANIMAL_TAMED, src)
+	pet_passive = TRUE
+
+	if(ai_controller)
+		ai_controller.can_idle = FALSE
+		var/static/list/pet_commands = list(
+			/datum/pet_command/idle,
+			/datum/pet_command/free,
+			/datum/pet_command/good_boy,
+			/datum/pet_command/follow,
+			/datum/pet_command/attack,
+			/datum/pet_command/fetch,
+			/datum/pet_command/play_dead,
+			/datum/pet_command/protect_owner,
+			/datum/pet_command/aggressive,
+			/datum/pet_command/calm,
+		)
+		var/datum/component/obeys_commands/commands = GetComponent(/datum/component/obeys_commands)
+		if(!commands)
+			AddComponent(/datum/component/obeys_commands, pet_commands)
+
 	stop_automated_movement_when_pulled = TRUE
 	if(user)
 		owner = user
@@ -306,22 +333,17 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 		x.forceMove(get_turf(src))
 		buckle_mob(x, TRUE)
 
-/mob/proc/set_stat(new_stat)
-	if(new_stat == stat)
-		return
-	. = stat
-	stat = new_stat
-	SEND_SIGNAL(src, COMSIG_MOB_STATCHANGE, new_stat, .)
-
 /mob/living/simple_animal/update_stat()
 	if(status_flags & GODMODE)
 		return
 	if(stat != DEAD)
 		if(health <= 0)
 			death()
-			SEND_SIGNAL(src, COMSIG_MOB_STATCHANGE, DEAD)
+			// SEND_SIGNAL(src, COMSIG_MOB_STATCHANGE, DEAD)
 			return
-	SEND_SIGNAL(src, COMSIG_MOB_STATCHANGE, stat)
+		else
+			set_stat(CONSCIOUS)
+	// SEND_SIGNAL(src, COMSIG_MOB_STATCHANGE, stat)
 	if(footstep_type)
 		AddComponent(/datum/component/footstep, footstep_type)
 
@@ -343,7 +365,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 	if(!stop_automated_movement && wander && !doing())
 		if(ssaddle && has_buckled_mobs())
 			return 0
-		if((isturf(loc) || allow_movement_on_non_turfs) && (mobility_flags & MOBILITY_MOVE))		//This is so it only moves if it's not inside a closet, gentics machine, etc.
+		if((isturf(loc) || allow_movement_on_non_turfs) && !HAS_TRAIT(src, TRAIT_IMMOBILIZED))		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 			turns_since_move++
 			if(turns_since_move >= turns_per_move)
 				if(!(stop_automated_movement_when_pulled && pulledby)) //Some animals don't move when pulled
@@ -529,7 +551,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 			transform = transform.Turn(180)
 		density = FALSE
 		..()
-		SEND_SIGNAL(src, COMSIG_MOB_STATCHANGE, DEAD)
+		// SEND_SIGNAL(src, COMSIG_MOB_STATCHANGE, DEAD)
 
 /mob/living/simple_animal/proc/CanAttack(atom/the_target)
 	if(see_invisible < the_target.invisibility)
@@ -560,14 +582,13 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 //	return
 
 /mob/living/simple_animal/revive(full_heal = FALSE, admin_revive = FALSE)
-	if(..()) //successfully ressuscitated from death
-		icon = initial(icon)
-		icon_state = icon_living
-		density = initial(density)
-		mobility_flags = MOBILITY_FLAGS_DEFAULT
-		update_mobility()
-		. = TRUE
-		setMovetype(initial(movement_type))
+	. = ..()
+	if(!.)
+		return
+	icon = initial(icon)
+	icon_state = icon_living
+	density = initial(density)
+	setMovetype(initial(movement_type))
 
 /mob/living/simple_animal/proc/make_babies() // <3 <3 <3
 	if(gender != FEMALE || stat || next_scan_time > world.time || !childtype || !animal_species || !SSticker.IsRoundInProgress())
@@ -606,13 +627,14 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 		var/childspawn = pickweight(childtype)
 		var/turf/target = get_turf(loc)
 		if(target)
+			GLOB.vanderlin_round_stats[STATS_ANIMALS_BRED]++
 			return new childspawn(target)
 //			visible_message("<span class='warning'>[src] finally gives birth.</span>")
 //			playsound(src, 'sound/foley/gross.ogg', 100, FALSE)
 //			breedchildren--
 
 /mob/living/simple_animal/canUseTopic(atom/movable/M, be_close=FALSE, no_dexterity=FALSE, no_tk=FALSE)
-	if(incapacitated())
+	if(incapacitated(ignore_grab = TRUE))
 		to_chat(src, "<span class='warning'>I can't do that right now!</span>")
 		return FALSE
 	if(be_close && !in_range(M, src))
@@ -641,23 +663,6 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 	else
 		REMOVE_TRAIT(src, TRAIT_IMMOBILIZED, RESTING_TRAIT)
 	return ..()
-
-/mob/living/simple_animal/update_mobility(value_otherwise = TRUE)
-	if(HAS_TRAIT_NOT_FROM(src, TRAIT_IMMOBILIZED, BUCKLED_TRAIT))
-		drop_all_held_items()
-		mobility_flags = NONE
-	else if(buckled)
-		mobility_flags = MOBILITY_FLAGS_INTERACTION
-	else
-		if(value_otherwise)
-			mobility_flags = MOBILITY_FLAGS_DEFAULT
-		else
-			mobility_flags = NONE
-	if(!(mobility_flags & MOBILITY_MOVE))
-		walk(src, 0) //stop mid walk
-
-	update_transform()
-	update_action_buttons_icon()
 
 /mob/living/simple_animal/update_transform()
 	var/matrix/ntransform = matrix(transform) //aka transform.Copy()
@@ -847,7 +852,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 					riding_datum.vehicle_move_delay -= (amt/5 + 1.5)
 					riding_datum.vehicle_move_delay -= 3
 			if(loc != oldloc)
-				var/obj/structure/mineral_door/MD = locate() in loc
+				var/obj/structure/door/MD = locate() in loc
 				if(MD && !MD.ridethrough)
 					if(isliving(user))
 						var/mob/living/L = user
@@ -874,8 +879,10 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 					SSidlenpcpool.idle_mobs_by_zlevel[T.z] -= src
 				else
 					SSidlenpcpool.idle_mobs_by_zlevel[T.z] += src
-			GLOB.simple_animals[AIStatus] -= src
-			GLOB.simple_animals[togglestatus] += src
+			GLOB.simple_animals["[AIStatus]"] -= src
+			if(!(togglestatus in GLOB.simple_animals))
+				GLOB.simple_animals["[togglestatus]"] = list()
+			GLOB.simple_animals["[togglestatus]"] += src
 			AIStatus = togglestatus
 		else
 			stack_trace("Something attempted to set simple animals AI to an invalid state: [togglestatus]")

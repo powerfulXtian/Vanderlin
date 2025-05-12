@@ -61,6 +61,30 @@
 	..()
 	. = 1
 
+/datum/reagent/medicine/rosawater
+	name = "Rosa Water"
+	description = "Steeped rose petals with mild regeneration."
+	reagent_state = LIQUID
+	color = "#f398b6"
+	taste_description = "floral"
+	overdose_threshold = 0
+	metabolization_rate = REAGENTS_METABOLISM
+	alpha = 173
+
+/datum/reagent/medicine/rosawater/on_mob_life(mob/living/carbon/M)
+	. = ..()
+	if (M.mob_biotypes & MOB_BEAST)
+		M.adjustFireLoss(0.5*REM)
+	else
+		M.adjustBruteLoss(-0.1*REM)
+		M.adjustFireLoss(-0.1*REM)
+		M.adjustOxyLoss(-0.1, 0)
+		var/list/our_wounds = M.get_wounds()
+		if (LAZYLEN(our_wounds))
+			var/upd = M.heal_wounds(1)
+			if (upd)
+				M.update_damage_overlays()
+
 /datum/reagent/medicine/gender_potion
 	name = "Gender Potion"
 	description = "Change the user's gender."
@@ -478,7 +502,7 @@ If you want to expand on poisons theres tons of fun effects TG chemistry has tha
 	metabolization_rate = 0.5
 
 /datum/reagent/toxin/fyritiusnectar/on_mob_life(mob/living/carbon/M)
-	if(volume > 0.49)
+	if(volume > 0.49 && prob(33))
 		M.add_nausea(9)
 		M.adjustFireLoss(2, 0)
 		M.adjust_fire_stacks(1)

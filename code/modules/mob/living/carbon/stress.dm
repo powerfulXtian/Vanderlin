@@ -30,6 +30,7 @@
 	var/stressbuffer = 0
 	var/list/negative_stressors = list()
 	var/list/positive_stressors = list()
+	COOLDOWN_DECLARE(stress_indicator)
 
 /mob/living/carbon/adjust_stress(amt)
 	stressbuffer = stressbuffer + amt
@@ -58,10 +59,6 @@
 				remove_stress(D.type)
 
 	if(stress != oldstress)
-		if(stress > oldstress)
-			to_chat(src, "<span class='red'>I gain stress.</span>")
-		else
-			to_chat(src, "<span class='green'>I gain peace.</span>")
 		switch(stress)
 			if(STRESS_VGOOD)
 				apply_status_effect(/datum/status_effect/stress/stressvgood)
@@ -88,7 +85,16 @@
 				remove_status_effect(/datum/status_effect/stress/stressvgood)
 				remove_status_effect(/datum/status_effect/stress/stressbad)
 				remove_status_effect(/datum/status_effect/stress/stressvbad)
-
+				if(!rogue_sneaking && !HAS_TRAIT(src, TRAIT_IMPERCEPTIBLE))
+					play_mental_break_indicator()
+		if(stress > oldstress)
+			to_chat(src, span_red("I gain stress."))
+			if(!rogue_sneaking && !HAS_TRAIT(src, TRAIT_IMPERCEPTIBLE))
+				play_stress_indicator()
+		else
+			to_chat(src, span_green("I gain peace."))
+			if(!rogue_sneaking && !HAS_TRAIT(src, TRAIT_IMPERCEPTIBLE))
+				play_relief_indicator()
 		if(hud_used)
 			if(hud_used.stressies)
 				hud_used.stressies.update_icon()
@@ -121,28 +127,30 @@
 		for(var/datum/stressevent/D in negative_stressors)
 			if(D.type == event)
 				found = TRUE
+				D.time_added = world.time
 				if(D.stacks >= D.max_stacks)
 					continue
-				D.time_added = world.time
 				var/pre_stack = D.get_stress()
 				D.stacks++
 				var/post_stack = D.get_stress()
 				if(N.stressadd > D.stressadd)
 					D.stressadd = N.stressadd
 				adjust_stress(post_stack-pre_stack)
+				D.on_apply(src)
 	else
 		for(var/datum/stressevent/D in positive_stressors)
 			if(D.type == event)
 				found = TRUE
+				D.time_added = world.time
 				if(D.stacks >= D.max_stacks)
 					continue
-				D.time_added = world.time
 				var/pre_stack = D.get_stress()
 				D.stacks++
 				var/post_stack = D.get_stress()
 				if(N.stressadd < D.stressadd)
 					D.stressadd = N.stressadd
 				adjust_stress(post_stack-pre_stack)
+				D.on_apply(src)
 	if(found)
 		return TRUE
 	N.time_added = world.time
@@ -152,6 +160,7 @@
 	else
 		positive_stressors += N
 	adjust_stress(N.get_stress())
+	N.on_apply(src)
 	return TRUE
 
 // Pass typepaths into this proc

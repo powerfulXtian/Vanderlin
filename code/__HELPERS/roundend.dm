@@ -92,10 +92,12 @@
 /mob/proc/do_game_over()
 	if(SSticker.current_state != GAME_STATE_FINISHED)
 		return
-	if(client)
-		client.show_game_over()
 	status_flags |= GODMODE
 	ai_controller?.set_ai_status(AI_STATUS_OFF)
+	if(client)
+		client.verbs |= /client/proc/lobbyooc
+		client.verbs |= /client/proc/view_stats
+		client.show_game_over()
 
 /mob/living/do_game_over()
 	..()
@@ -109,12 +111,8 @@
 	if(ishostile(src))
 		var/mob/living/simple_animal/hostile/H = src
 		H.LoseTarget()
-	if(ishuman(src))
-		var/mob/living/carbon/human/H = src
-		H.mode = AI_OFF
 	if(client)
-		client.verbs += /client/proc/lobbyooc
-		client.verbs += /client/proc/commendsomeone
+		client.verbs |= /client/proc/commendsomeone
 
 /client/proc/show_game_over()
 	var/atom/movable/screen/splash/credits/S = new(src, FALSE)
@@ -171,11 +169,11 @@
 
 	gamemode_report()
 
+	to_chat(world, personal_objectives_report())
+
 	sleep(10 SECONDS)
 
 	players_report()
-
-	stats_report()
 
 	SSvote.initiate_vote("map", "Psydon")
 
@@ -250,6 +248,13 @@
 	var/list/all_teams = list()
 	var/list/all_antagonists = list()
 
+	var/list/header_parts
+	if(GLOB.antagonist_teams.len || GLOB.antagonists.len)
+		header_parts += "<br>"
+		header_parts += "<div style='text-align: center; font-size: 1.2em;'>VILLAINS:</div>"
+		header_parts += "<hr class='paneldivider'>"
+		to_chat(world, header_parts)
+
 	for(var/datum/team/A in GLOB.antagonist_teams)
 		all_teams |= A
 
@@ -296,31 +301,6 @@
 
 	return
 
-/datum/controller/subsystem/ticker/proc/stats_report()
-	var/list/shit = list()
-	shit += "<br><span class='bold'>Δ--------------------Δ</span><br>"
-	shit += "<br><font color='#9b6937'><span class='bold'>Deaths:</span></font> [deaths]"
-	shit += "<br><font color='#825b1c'><span class='bold'>Moat Fallers:</span></font> [moatfallers]"
-	shit += "<br><font color='#700000'><span class='bold'>Ankles Broken:</span></font> [holefall]"
-	shit += "<br><font color='#ffee00'><span class='bold'>People Smiten:</span></font> [pplsmited]"
-	shit += "<br><font color='#af2323'><span class='bold'>Blood spilt:</span></font> [round(blood_lost / 100, 1)]L"
-	shit += "<br><font color='#af2323'><span class='bold'>People Gibbed:</span></font> [gibbs]"
-	shit += "<br><font color='#36959c'><span class='bold'>TRIUMPH(s) Awarded:</span></font> [tri_gained]"
-	shit += "<br><font color='#a02fa4'><span class='bold'>TRIUMPH(s) Stolen:</span></font> [tri_lost * -1]"
-	shit += "<br><font color='#f200ff'><span class='bold'>Drugs Snorted:</span></font> [snort]"
-	shit += "<br><font color='#0f555c'><span class='bold'>Beards Shaved:</span></font> [beardshavers]"
-//	if(cuckers.len)
-//		shit += "<br><font color='#4e488a'><span class='bold'>Adulterers:</span></font> "
-//		for(var/x in cuckers.len)
-//			shit += "[x]"
-	if(GLOB.confessors.len)
-		shit += "<br><font color='#93cac7'><span class='bold'>Confessors:</span></font> "
-		for(var/x in GLOB.confessors)
-			shit += "[x]"
-	shit += "<br><br><span class='bold'>∇--------------------∇</span>"
-	to_chat(world, "[shit.Join()]")
-	return
-
 /datum/controller/subsystem/ticker/proc/standard_reboot()
 	if(ready_for_reboot)
 		Reboot("Round ended.", "proper completion")
@@ -335,6 +315,11 @@
 
 	//Antagonists
 	parts += antag_report()
+
+	CHECK_TICK
+
+	//Personal objectives
+	parts += personal_objectives_report()
 
 	CHECK_TICK
 	//Medals
@@ -434,6 +419,66 @@
 		return "<div class='panel stationborder'>[parts.Join("<br>")]</div>"
 	return ""
 
+/datum/controller/subsystem/ticker/proc/personal_objectives_report()
+	var/list/parts = list()
+	var/failed_chosen = 0
+	var/has_any_objectives = FALSE
+
+	// Header
+	parts += "<div class='panel stationborder'>"
+	if(GLOB.personal_objective_minds.len)
+		parts += "<div style='text-align: center; font-size: 1.2em;'>GODS' CHAMPIONS:</div>"
+		parts += "<hr class='paneldivider'>"
+
+	// Process all minds with personal objectives
+	var/last_index = length(GLOB.personal_objective_minds)
+	var/current_index = 0
+	for(var/datum/mind/mind as anything in GLOB.personal_objective_minds)
+		current_index++
+		if(!mind.personal_objectives || !mind.personal_objectives.len)
+			continue
+
+		has_any_objectives = TRUE
+		var/any_success = FALSE
+		for(var/datum/objective/objective as anything in mind.personal_objectives)
+			if(objective.check_completion())
+				any_success = TRUE
+				break
+
+		if(!any_success)
+			failed_chosen++
+			continue
+
+		var/name_with_title
+		if(mind.current)
+			name_with_title = printplayer(mind)
+		else
+			name_with_title = "<b>Unknown Champion</b>"
+
+		parts += "[name_with_title]"
+
+		var/obj_count = 1
+		for(var/datum/objective/objective as anything in mind.personal_objectives)
+			var/result = objective.check_completion() ? span_greentext("TRIUMPH!") : span_redtext("FAIL")
+			parts += "<B>Goal #[obj_count]</B>: [objective.explanation_text] - [result]"
+			obj_count++
+
+		if(current_index < last_index)
+			parts += "<br>"
+		CHECK_TICK
+
+	if(!has_any_objectives)
+		parts += "<div style='text-align: center;'>No personal objectives were assigned this round.</div>"
+	else if(failed_chosen > 0)
+		if(failed_chosen == 1)
+			parts += "<div style='text-align: center;'>1 god's chosen has failed to become a champion.</div>"
+		else
+			parts += "<div style='text-align: center;'>[failed_chosen] gods' chosen have failed to become champions.</div>"
+
+	parts += "</div>"
+
+	return parts.Join("<br>")
+
 /datum/controller/subsystem/ticker/proc/antag_report()
 	var/list/result = list()
 	var/list/all_teams = list()
@@ -477,7 +522,7 @@
 			currrent_category = antagonist.roundend_category
 			previous_category = antagonist
 		result += antagonist.roundend_report()
-		result += "<br><br>"
+		result += "<br>"
 		CHECK_TICK
 
 	if(all_antagonists.len)
@@ -498,8 +543,10 @@
 
 /datum/controller/subsystem/ticker/proc/give_show_playerlist_button(client/C)
 	set waitfor = 0
-	to_chat(C,"<a href='byond://?src=[C];playerlistrogue=1'>* SHOW PLAYER LIST *</a>")
+	to_chat(C,"<a href='byond://?src=[C];playerlist=1'>* SHOW PLAYER LIST *</a>")
 	to_chat(C,"<a href='byond://?src=[C];commendsomeone=1'>* Commend a Character *</a>")
+	to_chat(C,"<a href='byond://?src=[C];viewstats=1'>* View Statistics *</a>")
+	C.show_round_stats(pick_assoc(GLOB.featured_stats))
 	C.commendation_popup()
 
 /datum/action/report
@@ -528,12 +575,12 @@
 	var/text = "<b>[usede]</b> was <b>[ply.name]</b>[jobtext] and"
 	if(ply.current)
 		if(ply.current.real_name != ply.name)
-			text += " <span class='redtext'>died</span>"
+			text += span_redtext(" died.")
 		else
 			if(ply.current.stat == DEAD)
-				text += " <span class='redtext'>died</span>"
+				text += span_redtext(" died.")
 			else
-				text += " <span class='greentext'>survived</span>"
+				text += span_greentext(" survived.")
 	return text
 
 /proc/printplayerlist(list/datum/mind/players,fleecheck)

@@ -1,7 +1,6 @@
 /datum/slapcraft_step/item/cloth
 	desc = "Add some cloth."
 	item_types = list(/obj/item/natural/cloth)
-	blacklist_item_types = list(/obj/item/natural/cloth/bandit)
 
 /datum/slapcraft_step/item/cloth/second
 /datum/slapcraft_step/item/cloth/third
@@ -86,6 +85,12 @@
 	desc = "Add a riddle of steel."
 	item_types = list(/obj/item/riddleofsteel)
 
+/datum/slapcraft_step/item/steel
+	desc = "Add a steel ingot."
+	item_types = list(/obj/item/ingot/steel)
+
+/datum/slapcraft_step/item/steel/second
+
 /datum/slapcraft_step/item/plank
 	desc = "Add a wooden plank."
 	item_types = list(/obj/item/natural/wood/plank)
@@ -107,6 +112,8 @@
 /datum/slapcraft_step/item/gold
 	desc = "Add a gold ingot."
 	item_types = list(/obj/item/ingot/gold)
+
+/datum/slapcraft_step/item/gold/second
 
 /datum/slapcraft_step/item/glass
 	desc = "Add a pane of glass."
@@ -134,3 +141,14 @@
 /datum/slapcraft_step/item/fur/second
 /datum/slapcraft_step/item/fur/third
 /datum/slapcraft_step/item/fur/fourth
+
+/datum/slapcraft_step/item/stoneblock
+	desc = "Add some stone blocks"
+	item_types = list(/obj/item/natural/stoneblock)
+
+/datum/slapcraft_step/item/stoneblock/second
+/datum/slapcraft_step/item/stoneblock/third
+
+/datum/slapcraft_step/item/candles
+	desc = "Add some candles."
+	item_types = list(/obj/item/candle)

@@ -12,7 +12,7 @@
 		var/obj/projectile/P = mover
 		return !P.can_hit_target(src, P.permutated, src == P.original, TRUE)
 	if(mover.throwing)
-		return (!density || !(mobility_flags & MOBILITY_STAND) || wallpressed || (mover.throwing.thrower == src && !ismob(mover)))
+		return (!density || body_position == LYING_DOWN || (mover.throwing.thrower == src && !ismob(mover)))
 	if(buckled == mover)
 		return TRUE
 	if(ismob(mover))
@@ -22,7 +22,7 @@
 			var/mob/living/M = mover
 			if(M.wallpressed)
 				return !wallpressed
-	return (!density || wallpressed || !(mobility_flags & MOBILITY_STAND))
+	return (!density || wallpressed || body_position == LYING_DOWN)
 
 /mob/living/toggle_move_intent()
 	. = ..()
@@ -61,15 +61,6 @@
 		if(MOVE_INTENT_SNEAK)
 			mod = 6
 	var/spdchange = (10-STASPD)*0.1
-	var/armorWeight = check_armor_weight()
-	if(armorWeight == "Heavy")
-		spdchange = spdchange + 0.2
-		if(!check_armor_skill())
-			spdchange = spdchange + 0.2
-	if(armorWeight == "Medium")
-		spdchange = spdchange + 0.1
-		if(!check_armor_skill())
-			spdchange = spdchange + 0.1
 	spdchange = clamp(spdchange, -0.5, 1)  //if this is not clamped, it can make you go faster than you should be able to.
 	mod = mod+spdchange
 	//maximum speed is achieved at 15 speed.
@@ -106,7 +97,7 @@
 		if(pulling != src)
 			if(isliving(pulling))
 				var/mob/living/L = pulling
-				if(!slowed_by_drag || (L.mobility_flags & MOBILITY_STAND) || L.buckled || grab_state >= GRAB_AGGRESSIVE)
+				if(!slowed_by_drag || L.body_position == STANDING_UP || L.buckled || grab_state >= GRAB_AGGRESSIVE)
 					remove_movespeed_modifier(MOVESPEED_ID_BULKY_DRAGGING)
 					return
 				add_movespeed_modifier(MOVESPEED_ID_BULKY_DRAGGING, multiplicative_slowdown = PULL_PRONE_SLOWDOWN)
@@ -126,3 +117,17 @@
 
 /mob/living/canZMove(dir, turf/target)
 	return can_zTravel(target, dir) && (movement_type & FLYING)
+
+/mob/living/can_safely_descend(turf/target)
+	target = GET_TURF_BELOW(target)
+	var/flags = NONE
+	for(var/i in target.contents)
+		var/atom/thing = i
+		flags |= thing.intercept_zImpact(src, 1)
+		if(flags & FALL_STOP_INTERCEPTING)
+			break
+	for(var/obj/structure/stairs/S in target.contents)
+		return TRUE
+	if(flags & FALL_INTERCEPTED)
+		return TRUE
+	return FALSE

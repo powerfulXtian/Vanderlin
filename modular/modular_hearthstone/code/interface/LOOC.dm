@@ -7,6 +7,7 @@
 	description = "Local OOC Chat."
 
 /datum/keybinding/looc/down(client/user)
+	. = ..()
 	user.get_looc()
 	return TRUE
 
@@ -41,6 +42,9 @@
 	if(!mob)
 		return
 
+	if(mob.stat && !holder)
+		to_chat(src, span_danger("You are unconscious!"))
+
 	msg = copytext_char(sanitize(msg), 1, MAX_MESSAGE_LEN)
 	if(!msg)
 		return
@@ -57,7 +61,7 @@
 
 
 	msg = emoji_parse(msg)
-	mob.log_talk(msg, LOG_LOOC)
+	mob.log_talk("LOOC: [msg]", LOG_LOOC)
 
 	var/prefix = "LOOC"
 	var/list/mobs = list()

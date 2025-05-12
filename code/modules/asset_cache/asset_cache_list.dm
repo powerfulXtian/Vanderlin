@@ -30,6 +30,8 @@
 /datum/asset/simple/namespaced/roguefonts
 	legacy = TRUE
 	assets = list(
+		"PixelifySans-VariableFont_wght.ttf" = 'interface/fonts/PixelifySans-VariableFont_wght.ttf',
+		"pterra.ttf" = 'interface/fonts/pterra.ttf',
 		"pterra.ttf" = 'interface/fonts/pterra.ttf',
 		"chiseld.ttf" = 'interface/fonts/chiseld.ttf',
 		"blackmoor.ttf" = 'interface/fonts/blackmoor.ttf',
@@ -74,7 +76,20 @@
 /datum/asset/simple/notes
 
 /datum/asset/spritesheet/goonchat
-	name = "Goonchat"
+	name = "chat"
+
+/datum/asset/spritesheet/goonchat/register()
+	// pre-loading all lanugage icons also helps to avoid meta
+	InsertAll("language", 'icons/language.dmi')
+	// catch languages which are pulling icons from another file
+	for(var/path in typesof(/datum/language))
+		var/datum/language/L = path
+		var/icon = initial(L.icon)
+		if (icon != 'icons/language.dmi')
+			var/icon_state = initial(L.icon_state)
+			Insert("language-[icon_state]", icon, icon_state=icon_state)
+
+	..()
 
 /datum/asset/group/tgui
 

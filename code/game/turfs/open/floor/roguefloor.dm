@@ -5,15 +5,18 @@
 	barefootstep = FOOTSTEP_HARD_BAREFOOT
 	clawfootstep = FOOTSTEP_WOOD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	tiled_dirt = FALSE
 	landsound = 'sound/foley/jumpland/woodland.wav'
-//	smooth = SMOOTH_MORE
-//	canSmoothWith = list(/turf/closed/mineral, /turf/closed/mineral, /turf/closed/wall/mineral/stonebrick, /turf/closed/wall/mineral/wood, /turf/closed/wall/mineral/wooddark, /turf/closed/wall/mineral/decowood, /turf/closed/wall/mineral/decostone, /turf/closed/wall/mineral/stone, /turf/closed/wall/mineral/stone/moss, /turf/open/floor/cobble, /turf/open/floor/dirt, /turf/open/floor/grass)
 	neighborlay = "dirtedge"
+	damage_deflection = 8
+	max_integrity = 600
 
 /turf/open/floor/ruinedwood/Initialize()
 	dir = pick(GLOB.cardinals)
 	. = ..()
+
+/turf/open/floor/ruinedwood/turf_destruction(damage_flag)
+	. = ..()
+	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 
 /turf/open/floor/ruinedwood/turned
 	icon_state = "wooden_floort"
@@ -28,6 +31,7 @@
 /*	..................   Darker version   ................... */
 /turf/open/floor/ruinedwood/darker // here problem was opposite, too bright wood for bandit lair
 	color = "#d9c9b0"
+
 /turf/open/floor/ruinedwood/turned/darker
 	color = "#d9c9b0"
 
@@ -39,7 +43,6 @@
 	footstep = FOOTSTEP_GRASS
 	barefootstep = FOOTSTEP_SOFT_BAREFOOT
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	tiled_dirt = FALSE
 	landsound = 'sound/foley/jumpland/grassland.wav'
 	slowdown = 0
 	damage_deflection = 6
@@ -53,54 +56,42 @@
 	. = ..()
 	dir = dirin
 
+/turf/open/floor/twig/turf_destruction(damage_flag)
+	. = ..()
+	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
+
 /turf/open/floor/wood
-	icon = 'icons/turf/floors/wood.dmi'
-	smooth_icon = 'icons/turf/floors/wood.dmi'
-	icon_state = "wood"
+	icon = 'icons/turf/smooth/floors/wood.dmi'
+	icon_state = MAP_SWITCH("wood", "wood-0")
 	footstep = FOOTSTEP_WOOD
 	barefootstep = FOOTSTEP_HARD_BAREFOOT
 	clawfootstep = FOOTSTEP_WOOD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	tiled_dirt = FALSE
-	smooth = SMOOTH_MORE
 	landsound = 'sound/foley/jumpland/woodland.wav'
-	canSmoothWith = list(/turf/open/floor/wood,
-						/turf/open/floor/woodturned,
-						/turf/open/floor/carpet)
+	smoothing_flags = SMOOTH_BITMASK
+	smoothing_groups = SMOOTH_GROUP_OPEN_FLOOR + SMOOTH_GROUP_FLOOR_WOOD
 	damage_deflection = 8
 	max_integrity = 600
-
-/turf/open/floor/wood/nosmooth //these are here so we can put wood floors next to each other but not have them smooth
-	icon_state = "woodsmooth"
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/open/floor/wood/nosmooth,
-						/turf/open/floor/woodturned/nosmooth,
-						/turf/open/floor/carpet)
+//these are here so we can put wood floors next to each other but not have them smooth
+/turf/open/floor/wood/nosmooth
 
 /turf/open/floor/wood/turf_destruction(damage_flag)
 	. = ..()
 	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 
 /turf/open/floor/wood/nosmooth/saiga
-	icon = 'icons/turf/floors/woodalt.dmi'
-	smooth_icon = 'icons/turf/floors/woodalt.dmi'
-	icon_state = "wood"
-	canSmoothWith = list(/turf/open/floor/wood/nosmooth/saiga,
-						/turf/open/floor/woodturned/nosmooth/saiga,
-						/turf/open/floor/carpet)
+	icon = 'icons/turf/smooth/floors/wood_alt.dmi'
 
 /turf/open/floor/woodturned
-	icon = 'icons/turf/floors/wood_turned.dmi'
-	smooth_icon = 'icons/turf/floors/wood_turned.dmi'
-	icon_state = "wood"
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/open/floor/woodturned,
-						/turf/open/floor/wood,
-						/turf/open/floor/carpet)
+	icon = 'icons/turf/smooth/floors/wood_turned.dmi'
+	icon_state = MAP_SWITCH("wood", "wood-0")
 	footstep = FOOTSTEP_WOOD
 	barefootstep = FOOTSTEP_HARD_BAREFOOT
 	clawfootstep = FOOTSTEP_WOOD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
+	landsound = 'sound/foley/jumpland/woodland.wav'
+	smoothing_flags = SMOOTH_BITMASK
+	smoothing_groups = SMOOTH_GROUP_OPEN_FLOOR + SMOOTH_GROUP_FLOOR_WOOD
 	damage_deflection = 8
 	max_integrity = 600
 
@@ -108,76 +99,50 @@
 	. = ..()
 	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 
+//these are here so we can put wood floors next to each other but not have them smooth
 /turf/open/floor/woodturned/nosmooth
-	icon_state = "woodsmooth"
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/open/floor/woodturned/nosmooth,
-						/turf/open/floor/wood/nosmooth,
-						/turf/open/floor/carpet)
 
 /turf/open/floor/woodturned/nosmooth/saiga
-	icon = 'icons/turf/floors/woodalt_turned.dmi'
-	smooth_icon = 'icons/turf/floors/woodalt_turned.dmi'
-	icon_state = "wood"
-	canSmoothWith = list(/turf/open/floor/woodturned/nosmooth/saiga,
-						/turf/open/floor/wood/nosmooth/saiga,
-						/turf/open/floor/carpet)
+	icon = 'icons/turf/smooth/floors/wood_turned_alt.dmi'
 
 /turf/open/floor/rooftop
 	name = "roof"
-	icon_state = "roof-arw"
+	icon_state = MAP_SWITCH("roof", "roof-arw")
 	footstep = FOOTSTEP_WOOD
 	barefootstep = FOOTSTEP_HARD_BAREFOOT
 	clawfootstep = FOOTSTEP_WOOD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	tiled_dirt = FALSE
 	damage_deflection = 8
 	max_integrity = 800
-
-/turf/open/floor/rooftop/Initialize()
-	. = ..()
-	icon_state = "roof"
 
 /turf/open/floor/rooftop/turf_destruction(damage_flag)
 	. = ..()
 	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 
 /turf/open/floor/rooftop/green
-	icon_state = "roofg-arw"
+	icon_state = MAP_SWITCH("roofg", "roofg-arw")
 
-/turf/open/floor/rooftop/green/Initialize()
-	. = ..()
-	icon_state = "roofg"
 /*	..................   Grasses   ................... */
 /turf/open/floor/grass
 	name = "grass"
 	desc = "Grass, sodden in mud and bogwater."
 	icon_state = "grass"
-	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_GRASS
 	barefootstep = FOOTSTEP_SOFT_BAREFOOT
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	tiled_dirt = FALSE
 	landsound = 'sound/foley/jumpland/grassland.wav'
 	slowdown = 0
+	smoothing_flags = SMOOTH_EDGE
+	smoothing_groups = SMOOTH_GROUP_OPEN_FLOOR + SMOOTH_GROUP_FLOOR_GRASS
+	smoothing_list = SMOOTH_GROUP_FLOOR_DIRT_ROAD
 	neighborlay = "grassedge"
-	smooth = SMOOTH_TRUE
-	canSmoothWith = list(
-						/turf/open/floor/snow,
-						/turf/open/floor/snow/patchy,
-						/turf/open/floor/snow/rough)
 	max_integrity = 1200
-
-	spread_chance = 15
-	burn_power = 6
+	spread_chance = 3
+	burn_power = 60
 
 /turf/open/floor/grass/Initialize()
-	dir = pick(GLOB.cardinals)
-//	GLOB.dirt_list += src
 	. = ..()
-
-/turf/open/floor/grass/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
+	dir = pick(GLOB.cardinals)
 
 /turf/open/floor/grass/turf_destruction(damage_flag)
 	. = ..()
@@ -186,75 +151,48 @@
 /turf/open/floor/grass/mixyel
 	icon_state = "grass_yelmix"
 	neighborlay = "grass_yelmixedge"
-	canSmoothWith = list(/turf/open/floor/grass,
-						/turf/open/floor/snow,
-						/turf/open/floor/snow/rough,
-						/turf/open/floor/snow/patchy)
 
 /turf/open/floor/grass/red
 	name = "red grass"
 	desc = "Grass, ripe with Dendor's blood."
 	icon_state = "grass_red"
 	neighborlay = "grass_rededge"
-	canSmoothWith = list(/turf/open/floor/grass,
-						/turf/open/floor/snow,
-						/turf/open/floor/snow/rough,
-						/turf/open/floor/snow/patchy)
 
 /turf/open/floor/grass/yel
 	name = "yellow grass"
 	desc = "Grass, blessed by Astrata's light."
 	icon_state = "grass_yel"
 	neighborlay = "grass_yeledge"
-	canSmoothWith = list(/turf/open/floor/grass,
-						/turf/open/floor/snow,
-						/turf/open/floor/snow/rough,
-						/turf/open/floor/snow/patchy)
 
 /turf/open/floor/grass/cold
 	name = "tundra grass"
 	desc = "Grass, frigid and touched by winter."
 	icon_state = "grass_cold"
 	neighborlay = "grass_coldedge"
-	canSmoothWith = list(/turf/open/floor/grass,
-						/turf/open/floor/snow,
-						/turf/open/floor/snow/rough,
-						/turf/open/floor/snow/patchy)
 
 /turf/open/floor/grass/hell
 	name = "hell grass"
 	desc = "Grass, ominous and instilling uncomfort."
 	icon_state = "hellgrass"
-	neighborlay = "hellgrassedge"
-	canSmoothWith = list(/turf/open/floor/grass,
-						/turf/open/floor/snow,
-						/turf/open/floor/snow/rough,
-						/turf/open/floor/snow/patchy)
+	neighborlay = "hellgrass"
 
 /turf/open/floor/grass/eora
 	icon_state = "hellgrass"
-	neighborlay = "hellgrassedge"
-	canSmoothWith = list(/turf/open/floor/grass,
-						/turf/open/floor/snow,
-						/turf/open/floor/snow/rough,
-						/turf/open/floor/snow/patchy)
-
+	neighborlay = "hellgrass"
 /*	..................   Snow   ................... */
 
 /turf/open/floor/snow
 	name = "snow"
 	desc = "A gentle blanket of snow."
 	icon_state = "snow"
-	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_GRASS
 	barefootstep = FOOTSTEP_SOFT_BAREFOOT
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	tiled_dirt = FALSE
 	landsound = 'sound/foley/jumpland/grassland.wav'
 	slowdown = 0
-	smooth = SMOOTH_TRUE
-	canSmoothWith = list(/turf/open/floor/snow,
-						/turf/open/floor/snow/rough)
+	smoothing_flags = SMOOTH_EDGE
+	smoothing_groups = SMOOTH_GROUP_OPEN_FLOOR + SMOOTH_GROUP_FLOOR_SNOW
+	smoothing_list = SMOOTH_GROUP_FLOOR_DIRT + SMOOTH_GROUP_FLOOR_DIRT_ROAD + SMOOTH_GROUP_FLOOR_GRASS + SMOOTH_GROUP_FLOOR_STONE
 	neighborlay = "snowedge"
 	spread_chance = 0
 
@@ -262,65 +200,34 @@
 	dir = pick(GLOB.cardinals)
 	. = ..()
 
-/turf/open/floor/snow/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
-
 /turf/open/floor/snow/rough
 	name = "rough snow"
 	desc = "A rugged blanket of snow."
 	icon_state = "snowrough"
-	smooth = SMOOTH_TRUE
-	canSmoothWith = list(/turf/open/floor/snow,
-						/turf/open/floor/snow/rough)
 	neighborlay = "snowroughedge"
-
-	spread_chance = 0
-
-/turf/open/floor/snowrough/Initialize()
-	dir = pick(GLOB.cardinals)
-	. = ..()
-
-/turf/open/floor/snowrough/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
 
 /turf/open/floor/snow/patchy
 	name = "patchy snow"
 	desc = "Half-melted snow revealing the hardy grass underneath."
 	icon_state = "snowpatchy_grass"
-	layer = MID_TURF_LAYER
-	footstep = FOOTSTEP_GRASS
-	barefootstep = FOOTSTEP_SOFT_BAREFOOT
-	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	tiled_dirt = FALSE
-	landsound = 'sound/foley/jumpland/grassland.wav'
-	slowdown = 0
-	smooth = SMOOTH_TRUE
-	canSmoothWith = list(/turf/open/floor/snow,
-						/turf/open/floor/snow/rough)
 	neighborlay = "snowpatchy_grassedge"
-
-/turf/open/floor/snowpatchy/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
 
 /*	..................   Dirts   ................... */
 /turf/open/floor/dirt
 	name = "dirt"
 	desc = "The dirt is pocked with the scars of countless wars."
 	icon_state = "dirt"
-	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_GRASS
 	barefootstep = FOOTSTEP_SOFT_BAREFOOT
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	tiled_dirt = FALSE
 	landsound = 'sound/foley/jumpland/dirtland.wav'
 	slowdown = 2
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/open/floor/grass,
-						/turf/open/floor/snow)
-
-	spread_chance = 8
-
+	smoothing_flags = SMOOTH_EDGE
+	smoothing_groups = SMOOTH_GROUP_OPEN_FLOOR + SMOOTH_GROUP_FLOOR_DIRT
+	smoothing_list = SMOOTH_GROUP_FLOOR_DIRT_ROAD + SMOOTH_GROUP_FLOOR_GRASS + SMOOTH_GROUP_FLOOR_STONE
 	neighborlay = "dirtedge"
+	spread_chance = 1.6
+
 	var/muddy = FALSE
 	var/bloodiness = 20
 	var/obj/structure/closet/dirthole/holie
@@ -366,9 +273,6 @@
 			H.update_inv_shoes()
 		if(water_level)
 			START_PROCESSING(SSwaterlevel, src)
-
-/turf/open/floor/dirt/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
 
 /turf/open/floor/dirt/Initialize()
 	dir = pick(GLOB.cardinals)
@@ -429,106 +333,27 @@
 	desc = "The dirt is pocked with the scars of countless steps."
 	icon_state = "road"
 	footstep = FOOTSTEP_SAND
-	smooth = SMOOTH_TRUE
-	canSmoothWith = list(/turf/open/floor,
-						/turf/closed/mineral,
-						/turf/closed/wall/mineral)
-	neighborlay = "dirtedge"
+	smoothing_flags = NONE
+	smoothing_groups = SMOOTH_GROUP_OPEN_FLOOR + SMOOTH_GROUP_FLOOR_DIRT_ROAD
+	smoothing_list = null
 	slowdown = 0
+	path_weight = 10
 
 /turf/open/floor/dirt/road/attack_right(mob/user)
 	return
 
-/turf/proc/smooth(adjacencies)
-	var/list/New
-	var/holder
-
-	for(var/A in neighborlay_list)
-		cut_overlay("[A]")
-		neighborlay_list -= A
-	var/usedturf
-	if(adjacencies & N_NORTH)
-		usedturf = get_step(src, NORTH)
-		if(isturf(usedturf))
-			var/turf/T = usedturf
-			if(neighborlay_override)
-				holder = "[neighborlay_override]-n"
-				LAZYADD(New, holder)
-				neighborlay_list += holder
-			else if(T.neighborlay)
-				holder = "[T.neighborlay]-n"
-				LAZYADD(New, holder)
-				neighborlay_list += holder
-	if(adjacencies & N_SOUTH)
-		usedturf = get_step(src, SOUTH)
-		if(isturf(usedturf))
-			var/turf/T = usedturf
-			if(neighborlay_override)
-				holder = "[neighborlay_override]-s"
-				LAZYADD(New, holder)
-				neighborlay_list += holder
-			else if(T.neighborlay)
-				holder = "[T.neighborlay]-s"
-				LAZYADD(New, holder)
-				neighborlay_list += holder
-	if(adjacencies & N_WEST)
-		usedturf = get_step(src, WEST)
-		if(isturf(usedturf))
-			var/turf/T = usedturf
-			if(neighborlay_override)
-				holder = "[neighborlay_override]-w"
-				LAZYADD(New, holder)
-				neighborlay_list += holder
-			else if(T.neighborlay)
-				holder = "[T.neighborlay]-w"
-				LAZYADD(New, holder)
-				neighborlay_list += holder
-	if(adjacencies & N_EAST)
-		usedturf = get_step(src, EAST)
-		if(isturf(usedturf))
-			var/turf/T = usedturf
-			if(neighborlay_override)
-				holder = "[neighborlay_override]-e"
-				LAZYADD(New, holder)
-				neighborlay_list += holder
-			else if(T.neighborlay)
-				holder = "[T.neighborlay]-e"
-				LAZYADD(New, holder)
-				neighborlay_list += holder
-
-	if(New)
-		add_overlay(New)
-	return New
-
-
-/turf/open/floor/dirt/road/Initialize()
-	dir = pick(GLOB.cardinals)
-	for(var/P in subtypesof(/turf/closed/wall/mineral))
-		canSmoothWith += P
-	for(var/P in subtypesof(/turf/closed/mineral))
-		canSmoothWith += P
-	for(var/P in subtypesof(/turf/open/floor))
-//		if(prob(90))
-		if(P == /turf/open/floor/dirt/road)
-			continue
-		canSmoothWith += P
-//	queue_smooth(src)
+/turf/open/floor/dirt/turf_destruction(damage_flag)
 	. = ..()
+	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 
 /turf/open/floor/underworld/road
 	name = "ash"
 	desc = "Smells like burnt wood."
 	icon_state = "ash"
-	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_SAND
 	barefootstep = FOOTSTEP_SOFT_BAREFOOT
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	tiled_dirt = FALSE
 	landsound = 'sound/foley/jumpland/dirtland.wav'
-	smooth = SMOOTH_TRUE
-	canSmoothWith = list(/turf/open/floor,
-						/turf/closed/mineral,
-						/turf/closed/wall/mineral)
 	slowdown = 0
 
 /turf/open/floor/underworld/road/Initialize()
@@ -539,16 +364,10 @@
 	name = "sandy ash"
 	desc = "This has been pranced upon by countless skeletal fighters."
 	icon_state = "ash3"
-	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_SAND
 	barefootstep = FOOTSTEP_SOFT_BAREFOOT
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	tiled_dirt = FALSE
 	landsound = 'sound/foley/jumpland/dirtland.wav'
-	smooth = SMOOTH_TRUE
-	canSmoothWith = list(/turf/open/floor,
-						/turf/closed/mineral,
-						/turf/closed/wall/mineral)
 	slowdown = 0
 
 /turf/open/floor/underworld/arena/Initialize()
@@ -559,13 +378,10 @@
 	name = "void"
 	desc = "The shifting blanket of Necra's realm."
 	icon_state = "undervoid"
-	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_SAND
 	barefootstep = FOOTSTEP_SOFT_BAREFOOT
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	tiled_dirt = FALSE
 	landsound = 'sound/foley/jumpland/dirtland.wav'
-	smooth = SMOOTH_FALSE
 	slowdown = 50
 
 /turf/open/floor/underworld/space/sparkle_quiet
@@ -582,16 +398,14 @@
 	name = "dirt"
 	desc = "The dirt is pocked with the scars of tectonic movement."
 	icon_state = "lavafloor"
-	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_SAND
 	barefootstep = FOOTSTEP_SOFT_BAREFOOT
 	clawfootstep = FOOTSTEP_SAND
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	tiled_dirt = FALSE
 	landsound = 'sound/foley/jumpland/dirtland.wav'
-	smooth = SMOOTH_TRUE
-	canSmoothWith = list(/turf/open/floor/dirt/road,
-						/turf/open/floor/dirt)
+	smoothing_flags = SMOOTH_EDGE
+	smoothing_groups = SMOOTH_GROUP_OPEN_FLOOR + SMOOTH_GROUP_FLOOR_DIRT
+	smoothing_list = SMOOTH_GROUP_FLOOR_DIRT_ROAD + SMOOTH_GROUP_FLOOR_GRASS + SMOOTH_GROUP_FLOOR_STONE
 	neighborlay = "lavedge"
 
 /turf/open/floor/volcanic/Initialize()
@@ -606,14 +420,6 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	landsound = 'sound/foley/jumpland/stoneland.wav'
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/closed/mineral,
-						/turf/open/floor/cobble,
-						/turf/open/floor/cobblerock,
-						/turf/open/floor/herringbone,
-						/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/snow)
 	damage_deflection = 10
 	max_integrity = 2800
 
@@ -621,22 +427,34 @@
 	. = ..()
 	dir = pick(GLOB.cardinals)
 
+/turf/open/floor/blocks/turf_destruction(damage_flag)
+	. = ..()
+	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
+
 /turf/open/floor/blocks/stonered
 	icon_state = "stoneredlarge"
+
 /turf/open/floor/blocks/stonered/tiny
 	icon_state = "stoneredtiny"
+
 /turf/open/floor/blocks/green
 	icon_state = "greenblocks"
+
 /turf/open/floor/blocks/bluestone
 	icon_state = "bluestone2"
+
 /turf/open/floor/blocks/newstone
 	icon_state = "newstone2"
+
 /turf/open/floor/blocks/newstone/alt
 	icon_state = "bluestone"
+
 /turf/open/floor/blocks/snow
 	icon_state = "snowblocks"
+
 /turf/open/floor/blocks/paving
 	icon_state = "paving"
+
 /turf/open/floor/blocks/paving/vert
 	icon_state = "paving-t"
 
@@ -648,6 +466,14 @@
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	landsound = 'sound/foley/jumpland/stoneland.wav'
 	icon = 'icons/turf/greenstone.dmi'
+	damage_deflection = 10
+	max_integrity = 800
+	break_sound = 'sound/combat/hits/onstone/stonedeath.ogg'
+	attacked_sound = list('sound/combat/hits/onstone/wallhit.ogg', 'sound/combat/hits/onstone/wallhit2.ogg', 'sound/combat/hits/onstone/wallhit3.ogg')
+
+/turf/open/floor/greenstone/turf_destruction(damage_flag)
+	. = ..()
+	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 
 /turf/open/floor/greenstone/runed
 	icon_state = "greenstoneruned"
@@ -659,17 +485,10 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	landsound = 'sound/foley/jumpland/stoneland.wav'
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/closed/mineral,
-						/turf/open/floor/herringbone,
-						/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/snow)
 	damage_deflection = 10
 	max_integrity = 800
-
-/turf/open/floor/hexstone/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
+	break_sound = 'sound/combat/hits/onstone/stonedeath.ogg'
+	attacked_sound = list('sound/combat/hits/onstone/wallhit.ogg', 'sound/combat/hits/onstone/wallhit2.ogg', 'sound/combat/hits/onstone/wallhit3.ogg')
 
 /turf/open/floor/hexstone/Initialize()
 	. = ..()
@@ -688,18 +507,12 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	landsound = 'sound/foley/jumpland/stoneland.wav'
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/closed/mineral,
-						/turf/open/floor/herringbone,
-						/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/snow)
 
 	damage_deflection = 10
 	max_integrity = 800
-
-/turf/open/floor/churchmarble/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
+	break_sound = 'sound/combat/hits/onstone/stonedeath.ogg'
+	attacked_sound = list('sound/combat/hits/onstone/wallhit.ogg', 'sound/combat/hits/onstone/wallhit2.ogg', 'sound/combat/hits/onstone/wallhit3.ogg')
+	shine = SHINE_SHINY
 
 /turf/open/floor/churchmarble/Initialize()
 	. = ..()
@@ -716,25 +529,21 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	landsound = 'sound/foley/jumpland/stoneland.wav'
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/closed/mineral,
-						/turf/open/floor/herringbone,
-						/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/snow)
 	damage_deflection = 10
 	max_integrity = 800
+	break_sound = 'sound/combat/hits/onstone/stonedeath.ogg'
+	attacked_sound = list('sound/combat/hits/onstone/wallhit.ogg', 'sound/combat/hits/onstone/wallhit2.ogg', 'sound/combat/hits/onstone/wallhit3.ogg')
 
 /turf/open/floor/church/turf_destruction(damage_flag)
 	. = ..()
 	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 
-/turf/open/floor/church/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
-
 /turf/open/floor/church/Initialize()
 	. = ..()
 	dir = pick(GLOB.cardinals)
+
+/turf/open/floor/church/purple
+	icon_state = "church_purple"
 
 /turf/open/floor/churchbrick
 	icon_state = "church_brick"
@@ -743,21 +552,14 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	landsound = 'sound/foley/jumpland/stoneland.wav'
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/closed/mineral,
-						/turf/open/floor/herringbone,
-						/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/snow)
 	damage_deflection = 10
 	max_integrity = 800
+	break_sound = 'sound/combat/hits/onstone/stonedeath.ogg'
+	attacked_sound = list('sound/combat/hits/onstone/wallhit.ogg', 'sound/combat/hits/onstone/wallhit2.ogg', 'sound/combat/hits/onstone/wallhit3.ogg')
 
 /turf/open/floor/churchbrick/turf_destruction(damage_flag)
 	. = ..()
 	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
-
-/turf/open/floor/churchbrick/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
 
 /turf/open/floor/churchbrick/Initialize()
 	. = ..()
@@ -770,25 +572,22 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	landsound = 'sound/foley/jumpland/stoneland.wav'
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/closed/mineral,
-						/turf/open/floor/herringbone,
-						/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/snow)
 	damage_deflection = 10
 	max_integrity = 800
+	break_sound = 'sound/combat/hits/onstone/stonedeath.ogg'
+	attacked_sound = list('sound/combat/hits/onstone/wallhit.ogg', 'sound/combat/hits/onstone/wallhit2.ogg', 'sound/combat/hits/onstone/wallhit3.ogg')
 
 /turf/open/floor/churchrough/turf_destruction(damage_flag)
 	. = ..()
 	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 
-/turf/open/floor/churchrough/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
-
 /turf/open/floor/churchrough/Initialize()
 	. = ..()
 	dir = pick(GLOB.cardinals)
+
+/turf/open/floor/churchrough/purple
+	icon_state = "church_rough_purple"
+
 //
 /turf/open/floor/herringbone
 	icon_state = "herringbone"
@@ -797,34 +596,19 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	landsound = 'sound/foley/jumpland/stoneland.wav'
+	smoothing_flags = SMOOTH_EDGE
+	smoothing_groups = SMOOTH_GROUP_OPEN_FLOOR + SMOOTH_GROUP_FLOOR_STONE
+	smoothing_list = SMOOTH_GROUP_FLOOR_DIRT_ROAD + SMOOTH_GROUP_FLOOR_GRASS
 	neighborlay = "herringedge"
-	smooth = SMOOTH_TRUE
-	canSmoothWith = list(/turf/open/floor/herringbone,
-						/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/grass/cold,
-						/turf/open/floor/grass/hell,
-						/turf/open/floor/grass/mixyel,
-						/turf/open/floor/grass/red,
-						/turf/open/floor/grass/yel,
-						/turf/open/floor/snow,
-						/turf/open/floor/snow/patchy,
-						/turf/open/floor/snow/rough)
 
 	damage_deflection = 10
 	max_integrity = 800
-
+	break_sound = 'sound/combat/hits/onstone/stonedeath.ogg'
+	attacked_sound = list('sound/combat/hits/onstone/wallhit.ogg', 'sound/combat/hits/onstone/wallhit2.ogg', 'sound/combat/hits/onstone/wallhit3.ogg')
 
 /turf/open/floor/herringbone/turf_destruction(damage_flag)
 	. = ..()
 	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
-
-/turf/open/floor/herringbone/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
-
-/turf/open/floor/herringbone/Initialize()
-	. = ..()
-	dir = pick(GLOB.cardinals)
 
 /*	..................   Cobblestone   ................... */
 /turf/open/floor/cobble
@@ -834,27 +618,16 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	landsound = 'sound/foley/jumpland/stoneland.wav'
+	smoothing_flags = SMOOTH_EDGE
+	smoothing_groups = SMOOTH_GROUP_OPEN_FLOOR + SMOOTH_GROUP_FLOOR_STONE
+	smoothing_list = SMOOTH_GROUP_FLOOR_DIRT_ROAD + SMOOTH_GROUP_FLOOR_GRASS
 	neighborlay = "cobbleedge"
-	smooth = SMOOTH_TRUE
-	canSmoothWith = list(/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/grass/cold,
-						/turf/open/floor/grass/hell,
-						/turf/open/floor/grass/mixyel,
-						/turf/open/floor/grass/red,
-						/turf/open/floor/grass/yel,
-						/turf/open/floor/snow,
-						/turf/open/floor/snow/patchy,
-						/turf/open/floor/snow/rough)
 	max_integrity = 1200
 
 /turf/open/floor/cobble/turf_destruction(damage_flag)
 	. = ..()
 	ChangeTurf(/turf/open/floor/dirt, flags = CHANGETURF_INHERIT_AIR)
 	new /obj/item/natural/stone(src)
-
-/turf/open/floor/cobble/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
 
 /turf/open/floor/cobble/Initialize()
 	. = ..()
@@ -864,9 +637,6 @@
 	icon_state = "cobblestonealt1"
 	neighborlay = "cobbleedgealt"
 
-/turf/open/floor/cobble/alt/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
-
 /turf/open/floor/cobble/alt/Initialize()
 	. = ..()
 	icon_state = "cobblestonealt[rand(1,3)]"
@@ -875,9 +645,6 @@
 	icon_state = "mossystone1"
 	neighborlay = "mossyedgealt"
 
-/turf/open/floor/cobble/mossy/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
-
 /turf/open/floor/cobble/mossy/Initialize()
 	. = ..()
 	icon_state = "mossystone[rand(1,3)]"
@@ -885,9 +652,6 @@
 /turf/open/floor/cobble/snow
 	icon_state = "snowcobble1"
 	neighborlay = "snowcobbleedge"
-
-/turf/open/floor/cobble/snow/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
 
 /turf/open/floor/cobble/snow/Initialize()
 	. = ..()
@@ -900,21 +664,15 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	landsound = 'sound/foley/jumpland/stoneland.wav'
+	smoothing_flags = SMOOTH_EDGE
+	smoothing_groups = SMOOTH_GROUP_OPEN_FLOOR + SMOOTH_GROUP_FLOOR_STONE
+	smoothing_list = SMOOTH_GROUP_FLOOR_DIRT_ROAD + SMOOTH_GROUP_FLOOR_GRASS
 	neighborlay = "cobblerock"
-	smooth = SMOOTH_TRUE
-	canSmoothWith = list(/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/grass/cold,
-						/turf/open/floor/grass/hell,
-						/turf/open/floor/grass/mixyel,
-						/turf/open/floor/grass/red,
-						/turf/open/floor/grass/yel,
-						/turf/open/floor/snow,
-						/turf/open/floor/snow/patchy,
-						/turf/open/floor/snow/rough)
+	max_integrity = 1200
 
-/turf/open/floor/cobblerock/cardinal_smooth(adjacencies)
-	smooth(adjacencies)
+/turf/open/floor/cobblerock/turf_destruction(damage_flag)
+	. = ..()
+	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 
 /turf/open/floor/cobblerock/alt
 	icon_state = "cobblealt"
@@ -927,7 +685,7 @@
 /obj/effect/decal/cobbleedge
 	name = ""
 	desc = ""
-	icon = 'icons/turf/roguefloor.dmi'
+	icon = 'icons/turf/floors.dmi'
 	icon_state = "cobblestone_edges"
 	mouse_opacity = 0
 
@@ -943,7 +701,7 @@
 /obj/effect/decal/cobblerockedge
 	name = ""
 	desc = ""
-	icon = 'icons/turf/roguefloor.dmi'
+	icon = 'icons/turf/floors.dmi'
 	icon_state = "cobble_edges"
 	mouse_opacity = 0
 
@@ -959,14 +717,8 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	footstepstealth = TRUE
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/closed/mineral,
-						/turf/open/floor/cobble,
-						/turf/open/floor/cobblerock,
-						/turf/open/floor/herringbone,
-						/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/snow)
+	damage_deflection = 10
+	max_integrity = 800
 
 /turf/open/floor/tile/turf_destruction(damage_flag)
 	. = ..()
@@ -999,16 +751,10 @@
 	barefootstep = FOOTSTEP_HARD_BAREFOOT
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/closed/mineral,
-						/turf/open/floor/cobble,
-						/turf/open/floor/cobblerock,
-						/turf/open/floor/herringbone,
-						/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/snow)
 	damage_deflection = 10
 	max_integrity = 1200
+	break_sound = 'sound/combat/hits/onstone/stonedeath.ogg'
+	attacked_sound = list('sound/combat/hits/onstone/wallhit.ogg', 'sound/combat/hits/onstone/wallhit2.ogg', 'sound/combat/hits/onstone/wallhit3.ogg')
 
 /turf/open/floor/concrete/turf_destruction(damage_flag)
 	. = ..()
@@ -1028,17 +774,9 @@
 	clawfootstep = FOOTSTEP_HARD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	footstepstealth = TRUE
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/closed/mineral,
-						/turf/open/floor/cobble,
-						/turf/open/floor/cobblerock,
-						/turf/open/floor/herringbone,
-						/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/snow)
 	damage_deflection = 16
 	max_integrity = 1400
-
+	attacked_sound = list('sound/combat/hits/onmetal/grille (1).ogg', 'sound/combat/hits/onmetal/grille (2).ogg', 'sound/combat/hits/onmetal/grille (3).ogg')
 
 /turf/open/floor/metal/turf_destruction(damage_flag)
 	. = ..()
@@ -1053,30 +791,8 @@
 /turf/open/floor/metal/barograte/open
 	icon_state = "barograteopen"
 
-/turf/open/floor/carpet
-	icon_state = "carpet"
-	landsound = 'sound/foley/jumpland/carpetland.wav'
-	footstep = FOOTSTEP_CARPET
-	barefootstep = FOOTSTEP_SOFT_BAREFOOT
-	clawfootstep = FOOTSTEP_SOFT_BAREFOOT
-	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	smooth = SMOOTH_MORE
-	canSmoothWith = list(/turf/closed/mineral,
-						/turf/open/floor/cobble,
-						/turf/open/floor/cobblerock,
-						/turf/open/floor/herringbone,
-						/turf/open/floor/dirt,
-						/turf/open/floor/grass,
-						/turf/open/floor/snow)
-	damage_deflection = 10
-	max_integrity = 800
-
-/turf/open/floor/carpet/turf_destruction(damage_flag)
-	. = ..()
-	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
-
 /turf/open/floor/carpet/lord
-	icon = 'icons/turf/roguefloor.dmi'
+	icon = 'icons/turf/floors.dmi'
 	icon_state = ""
 
 /turf/open/floor/carpet/lord/Initialize()
@@ -1112,29 +828,8 @@
 	icon_state = "carpet_r"
 
 /turf/open/floor/carpet/green
-	icon = 'icons/turf/roguefloor.dmi'
+	icon = 'icons/turf/floors.dmi'
 	icon_state = "carpet_inn"
-
-/turf/open/floor/shroud
-	name = "treetop"
-	icon_state = "treetop1"
-	landsound = 'sound/foley/jumpland/dirtland.wav'
-	footstep = null
-	barefootstep = null
-	clawfootstep = null
-	heavyfootstep = null
-	slowdown = 4
-
-/turf/open/floor/shroud/Entered(atom/movable/AM, atom/oldLoc)
-	..()
-	if(isliving(AM))
-		if(istype(oldLoc, type))
-			playsound(AM, "plantcross", 100, TRUE)
-
-/turf/open/floor/shroud/Initialize()
-	. = ..()
-	icon_state = "treetop[rand(1,2)]"
-	dir = pick(GLOB.cardinals)
 
 /turf/open/floor/naturalstone
 	icon_state = "digstone"
@@ -1151,6 +846,12 @@
 	clawfootstep = FOOTSTEP_WOOD_CLAW
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	landsound = 'sound/foley/jumpland/woodland.wav'
+	damage_deflection = 8
+	max_integrity = 1000
+
+/turf/open/floor/plank/turf_destruction(damage_flag)
+	. = ..()
+	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 
 /turf/open/floor/plank/h
 	icon_state = "plank2"
@@ -1158,11 +859,6 @@
 /turf/open/floor/tile/checker_green
 	icon_state = "tile"
 	color = "#94df5b"
-
-
-/turf/open/floor/naturalstone/turf_destruction(damage_flag)
-	. = ..()
-	return
 
 /turf/open/floor/sandstone
 	icon_state = "sandstone"
@@ -1172,3 +868,27 @@
 	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 	landsound = 'sound/foley/jumpland/grassland.wav'
 
+/*	..................  Platforms   ................... */
+/turf/open/floor/ruinedwood/platform
+	name = "wood platform"
+	desc = "A destructible platform to traverse gaps."
+	damage_deflection = 6
+	max_integrity = 600
+	break_sound = 'sound/combat/hits/onwood/destroywalldoor.ogg'
+	attacked_sound = list('sound/combat/hits/onwood/fence_hit1.ogg','sound/combat/hits/onwood/fence_hit2.ogg','sound/combat/hits/onwood/fence_hit3.ogg')
+
+/turf/open/floor/twig/platform
+	name = "twig platform"
+	desc = "A destructible platform to traverse gaps."
+	damage_deflection = 4
+	max_integrity = 150
+	break_sound = 'sound/combat/hits/onwood/destroywalldoor.ogg'
+	attacked_sound = list('sound/combat/hits/onwood/fence_hit1.ogg','sound/combat/hits/onwood/fence_hit2.ogg','sound/combat/hits/onwood/fence_hit3.ogg')
+
+/turf/open/floor/blocks/platform
+	name = "stone platform"
+	desc = "A destructible platform to traverse gaps."
+	damage_deflection = 8
+	max_integrity = 800
+	break_sound = 'sound/combat/hits/onstone/stonedeath.ogg'
+	attacked_sound = list('sound/combat/hits/onstone/wallhit.ogg', 'sound/combat/hits/onstone/wallhit2.ogg', 'sound/combat/hits/onstone/wallhit3.ogg')

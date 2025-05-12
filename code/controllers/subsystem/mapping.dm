@@ -59,11 +59,19 @@ SUBSYSTEM_DEF(mapping)
 	config = load_map_config(error_if_missing = FALSE)
 #endif
 	// After assigning a config datum to var/config, we check which map ajudstment fits the current config
-	for(var/datum/map_adjustment/each_adjust as anything in subtypesof(/datum/map_adjustment))
-		if(config.map_file && initial(each_adjust.map_file_name) != config.map_file)
+	for(var/datum/map_adjustment/adjust as anything in subtypesof(/datum/map_adjustment))
+		if(!adjust.map_file_name)
 			continue
-		map_adjustment = new each_adjust() // map_adjustment has multiple procs that'll be called from needed places (i.e. job_change)
-		log_world("Loaded '[config.map_file]' map adjustment.")
+		var/map = config.map_file
+		if(!map)
+			break
+		if(map_adjustment)
+			stack_trace("[map] is trying to set map adjustments after they have been set!")
+			break
+		if(adjust.map_file_name != map)
+			continue
+		map_adjustment = new adjust() // map_adjustment has multiple procs that'll be called from needed places (i.e. job_change)
+		log_world("Loaded '[map]' map adjustment.")
 		break
 	return ..()
 
@@ -81,12 +89,12 @@ SUBSYSTEM_DEF(mapping)
 		map_adjustment.on_mapping_init()
 		log_world("Applied '[map_adjustment.map_file_name]' map adjustment: on_mapping_init()")
 	loadWorld()
-	repopulate_sorted_areas()
+	require_area_resort()
 	process_teleport_locs()			//Sets up the wizard teleport locations
 	preloadTemplates()
 	// Add the transit level
 	transit = add_new_zlevel("Transit/Reserved", list(ZTRAIT_RESERVED = TRUE))
-	repopulate_sorted_areas()
+	require_area_resort()
 	initialize_reserved_level(transit.z_value)
 	generate_z_level_linkages()
 	calculate_default_z_level_gravities()
@@ -185,7 +193,7 @@ SUBSYSTEM_DEF(mapping)
 	// load the maps
 	for (var/P in parsed_maps)
 		var/datum/parsed_map/pm = P
-		if (!pm.load(1, 1, start_z + parsed_maps[P], no_changeturf = TRUE))
+		if (!pm.load(1, 1, start_z + parsed_maps[P], no_changeturf = TRUE, new_z = TRUE))
 			errorList |= pm.original_path
 
 	log_game("Loaded [name] in [(REALTIMEOFDAY - start_time)/10]s!")
@@ -209,16 +217,14 @@ SUBSYSTEM_DEF(mapping)
 
 	var/list/otherZ = list()
 
-	#ifndef LOWMEMORYMODE
 	for(var/map_json in config.other_z)
 		otherZ += load_map_config(map_json)
-	#endif
 	#ifndef NO_DUNGEON
-	otherZ += load_map_config("_maps/map_files/vanderlin/otherz/dungeon.json")
+	otherZ += load_map_config("_maps/map_files/shared/dungeon.json")
 	#endif
 
 	//For all maps
-	otherZ += load_map_config("_maps/map_files/roguetown/otherz/underworld.json")
+	otherZ += load_map_config("_maps/map_files/shared/underworld.json")
 	if(length(otherZ))
 		for(var/datum/map_config/OtherZ in otherZ)
 			LoadGroup(FailedZs, OtherZ.map_name, OtherZ.map_path, OtherZ.map_file, OtherZ.traits, ZTRAITS_STATION)
@@ -250,7 +256,7 @@ SUBSYSTEM_DEF(mapping)
 	if(config.map_path == "custom")
 		fdel("_maps/custom/[config.map_file]")
 		// And as the file is now removed set the next map to default.
-		next_map_config = load_map_config(default_to_box = TRUE)
+		next_map_config = load_map_config(default_to_van = TRUE)
 
 
 /datum/controller/subsystem/mapping/proc/maprotate()
@@ -309,7 +315,7 @@ SUBSYSTEM_DEF(mapping)
 
 /datum/controller/subsystem/mapping/proc/changemap(datum/map_config/VM)
 	if(!VM.MakeNextMap())
-		next_map_config = load_map_config(default_to_box = TRUE)
+		next_map_config = load_map_config(default_to_van = TRUE)
 		message_admins("Failed to set new map with next_map.json for [VM.map_name]! Using default as backup!")
 		return
 
@@ -431,6 +437,20 @@ SUBSYSTEM_DEF(mapping)
 		qdel(trait)
 		return TRUE
 	return FALSE
+
+/datum/controller/subsystem/mapping/proc/build_area_turfs(z_level, space_guaranteed)
+	// If we know this is filled with default tiles, we can use the default area
+	// Faster
+	if(space_guaranteed)
+		var/area/global_area = GLOB.areas_by_type[world.area]
+		LISTASSERTLEN(global_area.turfs_by_zlevel, z_level, list())
+		global_area.turfs_by_zlevel[z_level] = Z_TURFS(z_level)
+		return
+
+	for(var/turf/to_contain as anything in Z_TURFS(z_level))
+		var/area/our_area = to_contain.loc
+		LISTASSERTLEN(our_area.turfs_by_zlevel, z_level, list())
+		our_area.turfs_by_zlevel[z_level] += to_contain
 
 /proc/has_world_trait(datum/world_trait/trait_type)
 	if(!length(SSmapping.active_world_traits))

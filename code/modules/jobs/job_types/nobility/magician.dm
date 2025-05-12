@@ -1,9 +1,9 @@
 /datum/job/magician
 	title = "Court Magician"
-	tutorial = "Dream interpreter, soothsayer, astrologer and valued courtier. \
-	A scholar of Noc, or a secret worshipper of Zizo. \
-	Indebted to the ruler for funding yils of mystical studies in these dark times, \
-	only wisdom and arcane knowledge amassed during a long life will allow a mage to unlock their full potential."
+	tutorial = "A seer of dreams, a reader of stars, and a master of the arcane. Along a band of unlikely hero's, you shaped the fate of these lands.\
+	Now the days of adventure are gone, replaced by dusty tomes and whispered prophecies. The ruler's coin funds your studies,\
+	but debt's both magical and mortal are never so easily repaid. With age comes wisdom, but also the creeping dread that your greatest spell work\
+	may already be behind you."
 	flag = WIZARD
 	department_flag = NOBLEMEN
 	job_flags = (JOB_ANNOUNCE_ARRIVAL | JOB_SHOW_IN_CREDITS | JOB_EQUIP_RANK | JOB_NEW_PLAYER_JOINABLE)
@@ -14,13 +14,7 @@
 	min_pq = 6
 	bypass_lastclass = TRUE
 
-	allowed_races = list(
-		"Humen",
-		"Elf",
-		"Half-Elf",
-		"Dwarf",
-		"Aasimar"
-	)
+	allowed_races = RACES_PLAYER_NONDISCRIMINATED
 	allowed_ages = list(AGE_MIDDLEAGED, AGE_OLD, AGE_IMMORTAL)
 	allowed_sexes = list(MALE, FEMALE)
 
@@ -31,6 +25,7 @@
 
 /datum/outfit/job/magician
 	job_bitflag = BITFLAG_ROYALTY
+	allowed_patrons = list(/datum/patron/divine/noc, /datum/patron/inhumen/zizo)
 
 /datum/outfit/job/magician/pre_equip(mob/living/carbon/human/H)
 	..()
@@ -39,7 +34,7 @@
 	armor = /obj/item/clothing/shirt/robe/black
 	cloak = /obj/item/clothing/cloak/black_cloak
 	neck = /obj/item/clothing/neck/mana_star
-	id = /obj/item/clothing/ring/gold
+	ring = /obj/item/clothing/ring/gold
 	belt = /obj/item/storage/belt/leather/plaquesilver
 	beltr = /obj/item/storage/magebag
 	backl = /obj/item/weapon/polearm/woodstaff
@@ -55,7 +50,7 @@
 		H.mind?.adjust_skillrank(/datum/skill/combat/wrestling, 2, TRUE)
 		H.mind?.adjust_skillrank(/datum/skill/combat/unarmed, 2, TRUE)
 		H.mind?.adjust_skillrank(/datum/skill/combat/polearms, 3, TRUE)
-		H.mind?.adjust_skillrank(/datum/skill/craft/alchemy, 5, TRUE)
+		H.mind?.adjust_skillrank(/datum/skill/craft/alchemy, 3, TRUE)
 		H.mind?.adjust_skillrank(/datum/skill/labor/mathematics, 4, TRUE)
 		if(H.age == AGE_OLD)
 			armor = /obj/item/clothing/shirt/robe/courtmage
@@ -71,8 +66,8 @@
 					armor = /obj/item/clothing/shirt/robe/wizard
 					H.dna.species.soundpack_m = new /datum/voicepack/male/wizard()
 		ADD_TRAIT(H, TRAIT_SEEPRICES, TRAIT_GENERIC)
-		ADD_TRAIT(H, TRAIT_LEGENDARY_ALCHEMIST, TRAIT_GENERIC)
 		ADD_TRAIT(H, TRAIT_NOBLE, TRAIT_GENERIC)
+		ADD_TRAIT(H, TRAIT_OLDPARTY, TRAIT_GENERIC)
 		H.virginity = TRUE
 		H.change_stat(STATKEY_STR, -2)
 		H.change_stat(STATKEY_INT, 5)

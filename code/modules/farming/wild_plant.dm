@@ -55,11 +55,6 @@
 	add_sleep_experience(user, /datum/skill/labor/farming, user.STAINT * 2)
 
 	var/farming_skill = user.mind.get_skill_level(/datum/skill/labor/farming)
-	var/chance_to_ruin = 50 - (farming_skill * 25)
-	if(prob(chance_to_ruin))
-		to_chat(user, span_warning("I ruin the produce..."))
-		qdel(src)
-		return
 	var/feedback = "I harvest the produce."
 	var/modifier = 0
 	var/chance_to_ruin_single = 75 - (farming_skill * 25)
@@ -75,6 +70,8 @@
 		feedback = "Praise Dendor for our harvest is bountiful."
 		modifier += 3
 
+	record_featured_stat(FEATURED_STATS_FARMERS, user)
+	GLOB.vanderlin_round_stats[STATS_PLANTS_HARVESTED]++
 	to_chat(user, span_notice(feedback))
 	yield_produce(modifier)
 
@@ -107,3 +104,9 @@
 	incoming_type = /datum/plant_def/manabloom
 	. = ..()
 
+/obj/structure/wild_plant/nospread/poppy
+	icon_state = "poppy2"
+
+/obj/structure/wild_plant/nospread/poppy/New(loc, datum/plant_def/incoming_type, spread_chance)
+	incoming_type = /datum/plant_def/poppy
+	. = ..()

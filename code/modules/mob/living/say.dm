@@ -178,7 +178,7 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 	if((InCritical() && !fullcrit) || message_mode == MODE_WHISPER)
 		message_range = 1
 		message_mode = MODE_WHISPER
-		src.log_talk(message, LOG_WHISPER)
+		src.log_talk("whispered: [message]", LOG_WHISPER)
 		if(fullcrit)
 			var/health_diff = round(-HEALTH_THRESHOLD_DEAD + health)
 			// If we cut our message short, abruptly end it with a-..
@@ -189,7 +189,7 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 			message_mode = MODE_WHISPER_CRIT
 			succumbed = TRUE
 	else
-		src.log_talk(message, LOG_SAY, forced_by=forced)
+		src.log_talk("said: [message]", LOG_SAY, forced_by=forced)
 
 	message = treat_message(message) // unfortunately we still need this
 	var/sigreturn = SEND_SIGNAL(src, COMSIG_MOB_SAY, args)
@@ -197,6 +197,11 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 		message = uppertext(message)
 	if(!message)
 		return
+
+	if(src.client)
+		record_featured_stat(FEATURED_STATS_SPEAKERS, src)
+	if(findtext(message, "Abyssor"))
+		GLOB.vanderlin_round_stats[STATS_ABYSSOR_REMEMBERED]++
 
 	spans |= speech_span
 
@@ -268,6 +273,14 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 		create_chat_message(speaker, message_language, raw_message, spans, message_mode)
 	// Recompose message for AI hrefs, language incomprehension.
 	message = compose_message(speaker, message_language, raw_message, radio_freq, spans, message_mode)
+	// voice muffling
+	if(stat == UNCONSCIOUS)
+		message = "<I>... You can almost hear something ...</I>"
+	else
+		if(isliving(speaker))
+			var/mob/living/living_speaker = speaker
+			if(living_speaker != src && living_speaker.client && src.can_hear()) //src.client already checked above
+				log_message("heard [key_name(living_speaker)] say: [raw_message]", LOG_SAY, "#0978b8", FALSE)
 	show_message(message, MSG_AUDIBLE, deaf_message, deaf_type)
 	return message
 
@@ -335,18 +348,23 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 		var/turf/listener_turf = get_turf(AM)
 		var/turf/listener_ceiling = get_step_multiz(listener_turf, UP)
 		if(listener_ceiling)
+			listener_has_ceiling = TRUE
 			if(istransparentturf(listener_ceiling))
 				listener_has_ceiling = FALSE
 		if((!Zs_too && !isobserver(AM)) || message_mode == MODE_WHISPER)
 			if(AM.z != src.z)
 				continue
 		if(Zs_too && AM.z != src.z && !Zs_all)
-			if(AM.z < src.z && listener_has_ceiling)	//Listener is below the speaker and has a ceiling above them
-				continue
-			if(AM.z > src.z && speaker_has_ceiling)		//Listener is above the speaker and the speaker has a ceiling above
-				continue
-			if(listener_has_ceiling && speaker_has_ceiling)	//Both have a ceiling, on different z-levels -- no hearing at all
-				continue
+			if(!Zs_yell)
+				if(listener_turf.z < speaker_turf.z && listener_has_ceiling)	//Listener is below the speaker and has a ceiling above them
+					continue
+				if(listener_turf.z > speaker_turf.z && speaker_has_ceiling)		//Listener is above the speaker and the speaker has a ceiling above
+					continue
+				if(listener_has_ceiling && speaker_has_ceiling)	//Both have a ceiling, on different z-levels -- no hearing at all
+					continue
+			else
+				if(abs((listener_turf.z - speaker_turf.z)) >= 2)	//We're yelling with only one "!", and the listener is 2 or more z levels above or below us.
+					continue
 			var/listener_obstructed = TRUE
 			var/speaker_obstructed = TRUE
 			if(src != AM && !Zs_yell)	//We always hear ourselves. Zs_yell will allow a "!" shout to bypass walls one z level up or below.

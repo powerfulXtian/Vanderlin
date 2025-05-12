@@ -180,7 +180,7 @@
 
 	starting_atom = /obj/item/weapon/knife
 	attacked_atom = /obj/item/natural/stone
-	output = /obj/item/mortar
+	output = /obj/item/reagent_containers/glass/mortar
 	craftdiff = 0
 	skillcraft = /datum/skill/craft/masonry
 	subtypes_allowed = TRUE
@@ -296,6 +296,7 @@
 	attacked_atom = /obj/item/grown/log/tree
 	starting_atom= /obj/item/weapon/knife
 	output = /obj/item/weapon/polearm/woodstaff/quarterstaff
+	required_intent = /datum/intent/dagger/cut
 	craft_time = 5 SECONDS
 	uses_attacked_atom = FALSE
 
@@ -442,3 +443,4 @@
 	starting_atom= /obj/item/natural/fibers
 	output = /obj/item/weapon/axe/boneaxe
 	craftdiff = 2
+

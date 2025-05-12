@@ -255,9 +255,7 @@
 		return hide_cone()
 	if(ishuman(src))
 		var/mob/living/carbon/human/H = src
-		if(H.resting || H.lying)
-			return hide_cone()
-		if(!H.client && (H.mode != AI_OFF))
+		if(H.resting || H.body_position == LYING_DOWN)
 			return hide_cone()
 	return show_cone()
 

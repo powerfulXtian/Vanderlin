@@ -7,6 +7,11 @@
 	max_age = 850
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | RACE_SWAP | SLIME_EXTRACT
 
+	bodypart_features = list(
+		/datum/bodypart_feature/hair/head,
+		/datum/bodypart_feature/hair/facial,
+	)
+
 /datum/species/elf/on_species_gain(mob/living/carbon/C, datum/species/old_species)
 	..()
 	RegisterSignal(C, COMSIG_MOB_SAY, PROC_REF(handle_speech))
@@ -43,3 +48,6 @@
 	"blonde - moonlight" = "dfc999",
 	"red - autumn" = "a34332"
 	))
+
+/datum/species/elf/get_native_language()
+	return "Elfish"

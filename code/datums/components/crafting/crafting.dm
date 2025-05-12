@@ -137,6 +137,9 @@
 
 /atom/proc/OnCrafted(dirin, mob/user)
 	SHOULD_CALL_PARENT(TRUE)
+	SEND_SIGNAL(user, COMSIG_ITEM_CRAFTED, user, type)
+	record_featured_stat(FEATURED_STATS_CRAFTERS, user)
+	record_featured_object_stat(FEATURED_STATS_CRAFTED_ITEMS, name)
 	add_abstract_elastic_data(ELASCAT_CRAFTING, "[name]", 1)
 	return
 
@@ -145,11 +148,17 @@
 	. = ..()
 
 /datum/crafting_recipe/proc/TurfCheck(mob/user, turf/T)
+	if(istype(T, /turf/open/water))
+		return FALSE
+	if(istype(T, /turf/open/lava))
+		return FALSE
 	return TRUE
 
 
 /datum/component/personal_crafting/proc/construct_item(mob/user, datum/crafting_recipe/R)
 	if(user.doing())
+		return
+	if(!R)
 		return
 	var/list/contents = get_surroundings(user)
 //	var/send_feedback = 1
@@ -168,9 +177,6 @@
 	if(!isopenturf(T) || R.ontile)
 		T = get_turf(user.loc)
 	if(!R.TurfCheck(user, T))
-		to_chat(user, "<span class='warning'>I can't craft on [T].</span>")
-		return
-	if(istype(T, /turf/open/water))
 		to_chat(user, "<span class='warning'>I can't craft on [T].</span>")
 		return
 	if(isturf(R.result))

@@ -90,10 +90,18 @@
 			if(ismob(pulling))
 				user.pulling.forceMove(target)
 			user.forceMove(target)
-			user.start_pulling(pulling,supress_message = TRUE)
+			user.start_pulling(pulling,suppress_message = TRUE)
 			playsound(user, 'sound/foley/climb.ogg', 100, TRUE)
 			if(L.mind)
 				L.mind.adjust_experience(/datum/skill/misc/climbing, exp_to_gain, FALSE)
+
+/obj/structure/flora/newtree/attacked_by(obj/item/I, mob/living/user)
+	var/was_destroyed = obj_destroyed
+	. = ..()
+	if(.)
+		if(!was_destroyed && obj_destroyed)
+			record_featured_stat(FEATURED_STATS_TREE_FELLERS, user)
+			GLOB.vanderlin_round_stats[STATS_TREES_CUT]++
 
 /obj/structure/flora/newtree/fire_act(added, maxstacks)
 	. = ..()
@@ -407,6 +415,11 @@
 	icon = 'icons/roguetown/misc/tree.dmi'
 	density = FALSE
 	max_integrity = 10
+
+/obj/structure/flora/newleaf/attack_hand(mob/user)
+	if(isopenspace(loc))
+		loc.attack_hand(user) // so clicking leaves with an empty hand lets you climb down.
+	. = ..()
 
 /obj/structure/flora/newleaf/Initialize()
 	. = ..()

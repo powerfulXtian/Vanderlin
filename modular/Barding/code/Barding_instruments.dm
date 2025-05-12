@@ -32,13 +32,13 @@
 	var/icon_prefix
 
 /datum/looping_sound/instrument
-	mid_sounds = list()
-	mid_length = 60
+	mid_length = 2400
 	volume = 100
 	falloff = 2
 	extra_range = 5
 	var/stress2give = /datum/stressevent/music
 	persistent_loop = TRUE
+	sound_group = /datum/sound_group/instruments
 
 /datum/looping_sound/instrument/on_hear_sound(mob/M)
 	. = ..()
@@ -68,6 +68,7 @@
 
 /obj/item/instrument/Destroy()
 	terminate_playing(loc)
+	qdel(soundloop)
 	. = ..()
 
 /obj/item/instrument/process()
@@ -91,6 +92,10 @@
 
 	if(!HAS_TRAIT(user, TRAIT_BARDIC_TRAINING))
 		return
+
+	for(var/obj/structure/soil/soil in view(7, loc))
+		var/distance = max(1, get_dist(loc, soil))
+		soil.process_growth(round(2 / distance, 0.1))
 
 	for(var/mob/living/carbon/L in hearers(7, loc))
 		if(!L.client)
@@ -146,6 +151,8 @@
 	. = ..()
 	if(.)
 		return
+	if(!isliving(user) || user.stat || (HAS_TRAIT(user, TRAIT_RESTRAINED)))
+		return
 	user.changeNext_move(CLICK_CD_MELEE)
 	if(playing)
 		terminate_playing(user)
@@ -198,6 +205,7 @@
 	soundloop.stress2give = stressevent
 	soundloop.start()
 	user.apply_status_effect(/datum/status_effect/buff/playing_music, stressevent, note_color)
+	GLOB.vanderlin_round_stats[STATS_SONGS_PLAYED]++
 	if(dynamic_icon)
 		lift_to_mouth()
 		update_icon()

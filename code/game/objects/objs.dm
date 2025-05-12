@@ -168,7 +168,7 @@
 /obj/get_dumping_location(datum/component/storage/source,mob/user)
 	return get_turf(src)
 
-/obj/proc/CanAStarPass(ID, to_dir, caller)
+/obj/proc/CanAStarPass(ID, to_dir, requester)
 	. = !density
 
 /obj/proc/check_uplink_validity()
@@ -246,7 +246,7 @@
 		to_chat(M, "[V]: <span class='reallybig'>[output]</span>")
 
 	var/choice = input(M,"Warning, you can only reskin [src] once!","Reskin Object") as null|anything in sortList(unique_reskin)
-	if(!QDELETED(src) && choice && !current_skin && !M.incapacitated() && in_range(M,src))
+	if(!QDELETED(src) && choice && !current_skin && !M.incapacitated(ignore_grab = TRUE) && in_range(M,src))
 		if(!unique_reskin[choice])
 			return
 		current_skin = choice

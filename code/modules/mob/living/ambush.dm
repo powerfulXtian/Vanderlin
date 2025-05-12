@@ -12,7 +12,7 @@
 		return FALSE
 	if(!MOBTIMER_FINISHED(src, MT_AMBUSHLAST, 5 MINUTES))
 		return FALSE
-	return ambushable
+	return ambushable && !HAS_TRAIT(src, TRAIT_NOAMBUSH)
 
 /mob/living/proc/consider_ambush()
 	if(!prob(AMBUSH_CHANCE))
@@ -73,15 +73,15 @@
 			var/mob/living/carbon/human/H = spawnedmob
 			H.del_on_deaggro = 44 SECONDS
 			H.last_aggro_loss = world.time
-			H.retaliate(src)
+			H.ai_controller?.set_blackboard_key(BB_BASIC_MOB_CURRENT_TARGET, src)
 			mustype = 2
-	if(mustype == 1)
-		playsound(get_turf(src), pick('sound/misc/jumpscare (1).ogg','sound/misc/jumpscare (2).ogg','sound/misc/jumpscare (3).ogg','sound/misc/jumpscare (4).ogg'), 100)
-	else
-		playsound(get_turf(src), pick('sound/misc/jumphumans (1).ogg','sound/misc/jumphumans (2).ogg','sound/misc/jumphumans (3).ogg'), 100)
-	shake_camera(src, 2, 2)
 
 	if(iscarbon(src))
 		var/mob/living/carbon/C = src
 		if(C.stress >= 30 && (prob(50)))
 			C.heart_attack()
+			if(mustype == 1)
+				playsound(get_turf(src), pick('sound/misc/jumpscare (1).ogg','sound/misc/jumpscare (2).ogg','sound/misc/jumpscare (3).ogg','sound/misc/jumpscare (4).ogg'), 100)
+			else
+				playsound(get_turf(src), pick('sound/misc/jumphumans (1).ogg','sound/misc/jumphumans (2).ogg','sound/misc/jumphumans (3).ogg'), 100)
+			shake_camera(src, 2, 2)

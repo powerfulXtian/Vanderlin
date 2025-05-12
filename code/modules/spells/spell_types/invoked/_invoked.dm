@@ -39,7 +39,7 @@
 /obj/effect/proc_holder/spell/invoked/proc/on_deactivation(mob/user)
 	return
 
-/obj/effect/proc_holder/spell/invoked/InterceptClickOn(mob/living/caller, params, atom/target)
+/obj/effect/proc_holder/spell/invoked/InterceptClickOn(mob/living/requester, params, atom/target)
 	. = ..()
 	if(.)
 		return FALSE
@@ -76,12 +76,9 @@
 	current_amount--
 	for(var/i in 1 to projectiles_per_fire)
 		var/obj/projectile/P = new projectile_type(get_turf(user))
-		if(istype(P, /obj/projectile/magic/bloodsteal))
-			var/obj/projectile/magic/bloodsteal/B = P
-			B.sender = user
-		if(istype(P, /obj/projectile/magic/fetch))
-			var/obj/projectile/magic/fetch/B = P
-			B.sender = user
+		if(istype(P, /obj/projectile/magic))
+			var/obj/projectile/magic/projectile = P
+			projectile.sender = user
 		P.firer = user
 		P.preparePixelProjectile(target, user)
 		for(var/V in projectile_var_overrides)

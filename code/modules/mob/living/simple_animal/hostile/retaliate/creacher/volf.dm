@@ -41,9 +41,9 @@
 	melee_damage_lower = 15
 	melee_damage_upper = 20
 
-	TOTALCON = 6
-	TOTALSTR = 6
-	TOTALSPD = 12
+	base_constitution = 6
+	base_strength = 6
+	base_speed = 12
 
 	simple_detect_bonus = 20
 	retreat_distance = 0
@@ -65,12 +65,13 @@
 	can_have_ai = FALSE
 	ai_controller = /datum/ai_controller/volf
 	var/static/list/pet_commands = list(
+		/datum/pet_command/fish,
 		/datum/pet_command/idle,
 		/datum/pet_command/free,
-		/datum/pet_command/good_boy/wolf,
-		/datum/pet_command/follow/wolf,
-		/datum/pet_command/point_targeting/attack,
-		/datum/pet_command/point_targeting/fetch,
+		/datum/pet_command/good_boy,
+		/datum/pet_command/follow,
+		/datum/pet_command/attack,
+		/datum/pet_command/fetch,
 		/datum/pet_command/play_dead,
 		/datum/pet_command/protect_owner,
 		/datum/pet_command/aggressive,

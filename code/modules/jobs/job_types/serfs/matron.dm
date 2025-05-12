@@ -1,8 +1,9 @@
 /datum/job/matron
 	title = "Matron"
-	tutorial = "You are the Matron of the orphanage, \
-	an old strict lady whom oversee the 'wellbeing' of the orphans, \
-	you show them your tricks and you'll make them just as good as you one day."
+	tutorial = "You are the Matron of the orphanage, once a cunning rogue who walked the shadows alongside legends.\
+	Time has softened your edge but not your wit, thanks to your unlikely kinship with your old adventuring party.\
+	Now, you guide the orphans with both a firm and gentle hand, ensuring they grow up sharp, swift, and self-sufficient.\
+	Perhaps one dae, those fledglings might leap from the your nest and soar to a greater legacy."
 	flag = JESTER
 	department_flag = PEASANTS
 	job_flags = (JOB_ANNOUNCE_ARRIVAL | JOB_SHOW_IN_CREDITS | JOB_EQUIP_RANK | JOB_NEW_PLAYER_JOINABLE)
@@ -14,17 +15,8 @@
 
 	allowed_sexes = list(FEMALE)
 	allowed_ages = list(AGE_MIDDLEAGED, AGE_OLD, AGE_IMMORTAL)
-	allowed_races = list(
-		"Humen",
-		"Elf",
-		"Half-Elf",
-		"Dwarf",
-		"Tiefling",
-		"Dark Elf",
-		"Aasimar",
-		"Half-Orc"
-	)
-	
+	allowed_races = RACES_PLAYER_NONEXOTIC
+
 	outfit = /datum/outfit/job/matron
 	give_bank_account = 35
 	can_have_apprentices = TRUE
@@ -60,6 +52,7 @@
 		H.grant_language(/datum/language/thievescant)
 		to_chat(H, "<span class='info'>I can gesture in thieves' cant with ,t before my speech.</span>")
 		ADD_TRAIT(H, TRAIT_THIEVESGUILD, TRAIT_GENERIC)
+		ADD_TRAIT(H, TRAIT_OLDPARTY, TRAIT_GENERIC)
 		shirt = /obj/item/clothing/shirt/dress/gen/black
 		armor = /obj/item/clothing/armor/leather/vest/black
 		pants = /obj/item/clothing/pants/trou/beltpants

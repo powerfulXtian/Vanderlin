@@ -123,8 +123,9 @@
 	//let's adjust the light power based on our skill, too
 	var/skill_level = user.mind?.get_skill_level(attached_spell.associated_skill)
 	var/mote_power = clamp(4 + (skill_level - 3), 4, 7) // every step above journeyman should get us 1 more tile of brightness
-	mote.light_outer_range =  mote_power
-	mote.update_light()
+	mote.set_light_range(new_outer_range = mote_power)
+	if(mote.light_system == STATIC_LIGHT)
+		mote.update_light()
 
 	if (mote.loc == src)
 		user.visible_message(span_notice("[user] holds open the palm of [user.p_their()] hand and concentrates..."), span_notice("I hold open the palm of my hand and concentrate on my arcyne power..."))
@@ -163,7 +164,7 @@
 		user.visible_message(span_notice("[user] gestures at \the [target.name], arcyne power slowly scouring it away..."), span_notice("I begin to scour \the [target.name] away with my arcyne power..."))
 		if(do_after(user, cleanspeed, target))
 			to_chat(user, span_notice("I expunge \the [target.name] with my mana."))
-			qdel(target)
+			wash_atom(get_turf(target), CLEAN_MEDIUM)
 			return TRUE
 		return FALSE
 	else
@@ -172,8 +173,7 @@
 			to_chat(user, span_notice("I render \the [target.name] clean."))
 			for (var/obj/effect/decal/cleanable/C in target)
 				qdel(C)
-			target.remove_atom_colour(WASHABLE_COLOUR_PRIORITY)
-			SEND_SIGNAL(target, COMSIG_COMPONENT_CLEAN_ACT, CLEAN_MEDIUM)
+			wash_atom(target, CLEAN_MEDIUM)
 			return TRUE
 		return FALSE
 

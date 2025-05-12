@@ -1,3 +1,5 @@
+GLOBAL_LIST_EMPTY(personal_objective_minds)
+
 /*	Note from Carnie:
 		The way datum/mind stuff works has been changed a lot.
 		Minds now represent IC characters rather than following a client around constantly.
@@ -63,6 +65,8 @@
 	var/ghostname
 	/// the current mob this mind is residing in
 	var/mob/living/current
+	///the ghost we currently have
+	var/mob/dead/observer/current_ghost
 	/// is this mind datum currently linked to a client?
 	var/active = FALSE
 	/// the memory of this mind
@@ -142,6 +146,8 @@
 	var/list/apprentice_training_skills = list()
 
 	var/list/apprentices = list()
+	/// List of personal objectives not tied to the antag roles
+	var/list/personal_objectives = list()
 
 	var/has_studied = FALSE
 	/// Variable that lets the event picker see if someones getting chosen or not
@@ -372,16 +378,28 @@
 			if(apprentice.mind.adjust_experience(skill, apprentice_amt, FALSE, FALSE))
 				current.add_stress(/datum/stressevent/apprentice_making_me_proud)
 
-	if(known_skills[skill_ref] == old_level)
-		return //same level or we just started earning xp towards the first level.
+	var/is_new_skill = !(skill_ref in known_skills)
+	if(isnull(old_level) && !is_new_skill)
+		old_level = SKILL_LEVEL_NONE
+	if((isnull(old_level) && is_new_skill) || known_skills[skill_ref] == old_level)
+		return
 	if(silent)
 		return
 	if(known_skills[skill_ref] >= old_level)
 		if(known_skills[skill_ref] > old_level)
+			SEND_SIGNAL(current, COMSIG_SKILL_RANK_INCREASED, skill_ref, known_skills[skill_ref], old_level)
 			to_chat(current, span_nicegreen("My proficiency in [skill_ref.name] grows to [SSskills.level_names[known_skills[skill_ref]]]!"))
-			skill_ref.skill_level_effect(src, known_skills[skill_ref])
+			skill_ref.skill_level_effect(known_skills[skill_ref], src)
+			GLOB.vanderlin_round_stats[STATS_SKILLS_LEARNED]++
+			if(istype(skill_ref, /datum/skill/combat))
+				GLOB.vanderlin_round_stats[STATS_COMBAT_SKILLS]++
+			if(istype(skill_ref, /datum/skill/craft))
+				GLOB.vanderlin_round_stats[STATS_CRAFT_SKILLS]++
+			if(skill == /datum/skill/misc/reading && old_level == SKILL_LEVEL_NONE && current.is_literate())
+				GLOB.vanderlin_round_stats[STATS_LITERACY_TAUGHT]++
 		if(skill == /datum/skill/magic/arcane)
 			adjust_spellpoints(1)
+
 		return TRUE
 	else
 		to_chat(current, span_warning("My [skill_ref.name] has weakened to [SSskills.level_names[known_skills[skill_ref]]]!"))
@@ -462,12 +480,23 @@
 			known_skills[skill_ref] = SKILL_LEVEL_NOVICE
 		if(0 to SKILL_EXP_NOVICE)
 			known_skills[skill_ref] = SKILL_LEVEL_NONE
-	if(isnull(old_level) || known_skills[skill_ref] == old_level)
-		return //same level or we just started earning xp towards the first level.
+	var/is_new_skill = !(skill_ref in known_skills)
+	if(isnull(old_level) && !is_new_skill)
+		old_level = SKILL_LEVEL_NONE
+	if((isnull(old_level) && is_new_skill) || known_skills[skill_ref] == old_level)
+		return
 	if(silent)
 		return
 	if(known_skills[skill_ref] >= old_level)
+		SEND_SIGNAL(current, COMSIG_SKILL_RANK_INCREASED, skill_ref, known_skills[skill_ref], old_level)
 		to_chat(current, span_nicegreen("I feel like I've become more proficient at [skill_ref.name]!"))
+		GLOB.vanderlin_round_stats[STATS_SKILLS_LEARNED]++
+		if(istype(skill_ref, /datum/skill/combat))
+			GLOB.vanderlin_round_stats[STATS_COMBAT_SKILLS]++
+		if(istype(skill_ref, /datum/skill/craft))
+			GLOB.vanderlin_round_stats[STATS_CRAFT_SKILLS]++
+		if(skill == /datum/skill/misc/reading && old_level == SKILL_LEVEL_NONE && current.is_literate())
+			GLOB.vanderlin_round_stats[STATS_LITERACY_TAUGHT]++
 	else
 		to_chat(current, span_warning("I feel like I've become worse at [skill_ref.name]!"))
 
@@ -480,7 +509,7 @@
  ** max - maximum amount up to which the skill will be changed
 */
 /datum/mind/proc/clamped_adjust_skillrank(skill, amt, max, silent)
-	adjust_skillrank(skill, clamp(max - get_skill_level(skill), 0, amt), silent)
+	adjust_skillrank(skill, clamp(abs(amt - get_skill_level(skill)), 0, max), silent)
 
 /**
  * sets the skill level to a specific amount
@@ -684,7 +713,6 @@
 /datum/mind/proc/has_antag_datum(datum_type, check_subtypes = TRUE)
 	if(!datum_type)
 		CRASH("has_antag_datum was called without an antag datum specified!")
-	. = FALSE
 	for(var/a in antag_datums)
 		var/datum/antagonist/antag_datum_ref = a
 		if(check_subtypes && istype(antag_datum_ref, datum_type))
@@ -700,10 +728,6 @@
 	for(var/datum/antagonist/GG in antag_datums)
 		is_good_guy &&= GG.isgoodguy
 	return is_good_guy
-
-
-/datum/mind/proc/equip_traitor(employer = "The Syndicate", silent = FALSE, datum/antagonist/uplink_owner)
-	return
 
 /**
  * Link a new mobs mind to the creator of said mob. They will join any team they are currently on, and will only switch teams when their creator does.
@@ -727,6 +751,13 @@
 	var/output = "<B>[current.real_name]'s Memories:</B><br>"
 	output += memory
 
+	if(personal_objectives.len)
+		output += "<B>Personal Objectives:</B>"
+		var/personal_count = 1
+		for(var/datum/objective/objective in personal_objectives)
+			output += "<br><B>Personal Goal #[personal_count]</B>: [objective.explanation_text][objective.completed ? " (COMPLETED)" : ""]"
+			personal_count++
+		output += "<br>"
 
 	var/list/all_objectives = list()
 	for(var/datum/antagonist/antag_datum_ref in antag_datums)
@@ -735,19 +766,14 @@
 
 	if(all_objectives.len)
 		output += "<B>Objectives:</B>"
-		var/obj_count = 1
+		var/antag_obj_count = 1
 		for(var/datum/objective/objective in all_objectives)
-			output += "<br><B>Objective #[obj_count++]</B>: [objective.explanation_text]"
-//			var/list/datum/mind/other_owners = objective.get_owners() - src
-//			if(other_owners.len)
-//				output += "<ul>"
-//				for(var/datum/mind/M in other_owners)
-//					output += "<li>Conspirator: [M.name]</li>"
-//				output += "</ul>"
+			output += "<br><B>[objective.flavor] #[antag_obj_count]</B>: [objective.explanation_text][objective.completed ? " (COMPLETED)" : ""]"
+			antag_obj_count++
 
 	if(window)
 		recipient << browse(output,"window=memory")
-	else if(all_objectives.len || memory)
+	else if(all_objectives.len || memory || personal_objectives.len)
 		to_chat(recipient, "<i>[output]</i>")
 
 /// output current targets to the player
@@ -759,6 +785,67 @@
 			if (carbon.job)
 				output += " - [carbon.job]"
 	output += "<br>Your creed is blood, your faith is steel. You will not rest until these souls are yours. Use the profane dagger to trap their souls for Graggar."
+
+	if(window)
+		recipient << browse(output,"window=memory")
+
+/datum/mind/proc/recall_culling(mob/recipient, window=1)
+	var/output = "<B>[recipient.real_name]'s Rival:</B><br>"
+	for(var/datum/culling_duel/D in GLOB.graggar_cullings)
+		var/mob/living/carbon/human/challenger = D.challenger.resolve()
+		var/mob/living/carbon/human/target = D.target.resolve()
+		var/obj/item/organ/heart/target_heart = D.target_heart.resolve()
+		var/obj/item/organ/heart/challenger_heart = D.challenger_heart.resolve()
+		var/target_heart_location
+		var/challenger_heart_location
+
+		if(target_heart)
+			target_heart_location = target_heart.owner ? target_heart.owner.prepare_deathsight_message() : lowertext(get_area_name(target_heart))
+
+		if(challenger_heart)
+			challenger_heart_location = challenger_heart.owner ? challenger_heart.owner.prepare_deathsight_message() : lowertext(get_area_name(challenger_heart))
+
+		if(recipient == challenger)
+			if(target)
+				if(target_heart && target_heart.owner && target_heart.owner != target) // Rival is not gone but their heart is in someone else
+					output += "<br>[target.real_name], the [target.job]"
+					output += "<br>Your rival's heart beats in [target_heart.owner.real_name]'s chest in [target_heart_location]"
+					output += "<br>Retrieve and consume it to claim victory! Graggar will not forgive failure."
+				else
+					output += "<br>[target.real_name], the [target.job]"
+					output += "<br>Eat your rival's heart before they eat YOURS! Graggar will not forgive failure."
+			else if(target_heart)
+				if(target_heart.owner && target_heart.owner != recipient)
+					output += "<br>Rival's Heart"
+					output += "<br>It's currently inside [target_heart.owner.real_name]'s chest in [target_heart_location]"
+					output += "<br>Your rival's heart beats in another's chest. Retrieve and consume it to claim victory!"
+				else
+					output += "<br>Rival's Heart"
+					output += "<br>It's somewhere in the [target_heart_location]"
+					output += "<br>Your rival's heart is exposed bare! Consume it to claim victory!"
+			else
+				continue
+
+		else if(recipient == target)
+			if(challenger)
+				if(challenger_heart && challenger_heart.owner && challenger_heart.owner != challenger) // Rival is not gone but their heart is in someone else
+					output += "<br>[challenger.real_name], the [challenger.job]"
+					output += "<br>Your rival's heart beats in [challenger_heart.owner.real_name]'s chest in [challenger_heart_location]"
+					output += "<br>Retrieve and consume it to claim victory! Graggar will not forgive failure."
+				else
+					output += "<br>[challenger.real_name], the [challenger.job]"
+					output += "<br>Eat your rival's heart before he eat YOURS! Graggar will not forgive failure."
+			else if(challenger_heart)
+				if(challenger_heart.owner && challenger_heart.owner != recipient)
+					output += "<br>Rival's Heart"
+					output += "<br>It's currently inside [challenger_heart.owner.real_name]'s chest in [challenger_heart_location]"
+					output += "<br>Your rival's heart beats in another's chest. Retrieve and consume it to claim victory!"
+				else
+					output += "<br>Rival's Heart"
+					output += "<br>It's somewhere in the [challenger_heart_location]"
+					output += "<br>Your rival's heart is exposed bare! Consume it to claim victory!"
+			else
+				continue
 
 	if(window)
 		recipient << browse(output,"window=memory")
@@ -895,22 +982,45 @@
 		usr = current
 	traitor_panel()
 
-/// get all objectives of a mind
-/datum/mind/proc/get_all_objectives()
-	var/list/all_objectives = list()
+/// Gets only antagonist objectives
+/datum/mind/proc/get_antag_objectives()
+	var/list/antag_objectives = list()
 	for(var/datum/antagonist/antag_datum_ref in antag_datums)
-		all_objectives |= antag_datum_ref.objectives
-	return all_objectives
+		antag_objectives |= antag_datum_ref.objectives
+	return antag_objectives
 
-/// print out all objectives to a mind
-/datum/mind/proc/announce_objectives()
+/// Gets only personal objectives
+/datum/mind/proc/get_personal_objectives()
+	return personal_objectives?.Copy() || list()
+
+/// Gets all objectives (both types)
+/datum/mind/proc/get_all_objectives()
+	return get_personal_objectives() + get_antag_objectives()
+
+/// Announces only antagonist objectives
+/datum/mind/proc/announce_antagonist_objectives()
 	var/obj_count = 1
-	to_chat(current, span_notice("My current objectives:"))
-	for(var/objective in get_all_objectives())
-		var/datum/objective/O = objective
-		O.update_explanation_text()
-		to_chat(current, "<B>[O.flavor] #[obj_count]</B>: [O.explanation_text]")
-		obj_count++
+	for(var/datum/antagonist/antag_datum_ref in antag_datums)
+		if(length(antag_datum_ref.objectives))
+			to_chat(current, span_notice("Your [antag_datum_ref.name] objectives:"))
+			for(var/datum/objective/O in antag_datum_ref.objectives)
+				O.update_explanation_text()
+				to_chat(current, "<B>[O.flavor] #[obj_count]</B>: [O.explanation_text]")
+				obj_count++
+
+/// Announces only personal objectives
+/datum/mind/proc/announce_personal_objectives()
+	if(length(personal_objectives))
+		var/personal_count = 1
+		for(var/datum/objective/O in personal_objectives)
+			O.update_explanation_text()
+			to_chat(current, "<B>Personal Goal #[personal_count]</B>: [O.explanation_text]")
+			personal_count++
+
+/// Announce all objectives (both types)
+/datum/mind/proc/announce_objectives()
+	announce_personal_objectives()
+	announce_antagonist_objectives()
 
 /**
  * add a spell to a mind
@@ -1149,3 +1259,19 @@
 		title = apprentice_name
 	youngling.mind.our_apprentice_name = "[current.real_name]'s [title]"
 	to_chat(current, span_notice("[youngling.real_name] has become your apprentice."))
+
+/datum/mind/proc/add_personal_objective(datum/objective/O)
+	if(!istype(O))
+		return FALSE
+	personal_objectives += O
+	O.owner = src
+	return TRUE
+
+/datum/mind/proc/remove_personal_objective(datum/objective/O)
+	personal_objectives -= O
+	qdel(O)
+
+/datum/mind/proc/clear_personal_objectives()
+	for(var/O in personal_objectives)
+		qdel(O)
+	personal_objectives.Cut()
