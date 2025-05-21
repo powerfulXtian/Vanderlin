@@ -7,9 +7,9 @@ SUBSYSTEM_DEF(migrants)
 	var/time_until_next_wave = 30 MINUTES
 	var/wave_timer = 0
 
-	var/time_between_waves = 15 MINUTES
-	var/time_between_fail_wave = 10 MINUTES
-	var/wave_wait_time = 60 SECONDS
+	var/time_between_waves = 10 MINUTES
+	var/time_between_fail_wave = 5 MINUTES
+	var/wave_wait_time = 5 MINUTES
 
 	var/list/spawned_waves = list()
 
