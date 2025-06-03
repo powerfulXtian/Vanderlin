@@ -405,21 +405,6 @@
 		return TRUE
 	return FALSE
 
-/obj/structure/flora/grass/bush/CheckExit(atom/movable/mover, turf/target)
-	if(mover.throwing) //you are now stuck
-		return FALSE
-	if(istype(mover) && (mover.pass_flags & PASSGRILLE))
-		return TRUE
-	if(isdead(mover))
-		return TRUE
-	if(isliving(mover))
-		var/mob/living/living_mover = mover
-		if(living_mover.stat > CONSCIOUS && !living_mover.pulledby)
-			to_chat(living_mover, span_warning("I don't have the strength to free myself from [src]..."))
-			return FALSE
-		return TRUE
-	return FALSE
-
 // bush crossing
 /obj/structure/flora/grass/bush/Crossed(atom/movable/AM)
 	. = ..()
@@ -438,25 +423,21 @@
 	else
 		to_chat(L, span_warning("I get stuck in \a [src]."))
 
-	if(!ishuman(L))
-		to_chat(L, span_warning("I cut myself on [src]'s thorns."))
-		L.apply_damage(5, BRUTE)
-	else
+	if(ishuman(L))
 		var/mob/living/carbon/human/H = L
-		var/obj/item/bodypart/BP = pick(H.bodyparts)
-		BP.receive_damage(10)
 		var/was_hard_collision = (H.m_intent == MOVE_INTENT_RUN || H.throwing || H.atom_flags & Z_FALLING)
-		if((was_hard_collision && prob(10)) && !HAS_TRAIT(src, TRAIT_PIERCEIMMUNE))
-			var/obj/item/natural/thorn/TH = new(src.loc)
-			BP.add_embedded_object(TH, silent = TRUE)
-			to_chat(H, span_danger("\A [TH] impales my [BP.name]."))
-			if(!HAS_TRAIT(H, TRAIT_NOPAIN))
-				H.emote("painscream")
-				L.Stun(3 SECONDS) //that fucking hurt
-				H.consider_ambush()
-		else if(prob(70))
+		if(was_hard_collision)
+			var/obj/item/bodypart/BP = pick(H.bodyparts)
+			BP.receive_damage(10)
 			to_chat(H, span_warning("A thorn [pick("slices","cuts","nicks")] my [BP.name]."))
-
+			if((prob(20)) && !HAS_TRAIT(src, TRAIT_PIERCEIMMUNE))
+				var/obj/item/natural/thorn/TH = new(src.loc)
+				BP.add_embedded_object(TH, silent = TRUE)
+				to_chat(H, span_danger("\A [TH] impales my [BP.name]."))
+				if(!HAS_TRAIT(H, TRAIT_NOPAIN))
+					H.emote("painscream")
+					L.Stun(3 SECONDS) //that fucking hurt
+					H.consider_ambush()
 
 /obj/structure/flora/grass/bush/wall
 	name = "great bush"
@@ -686,6 +667,8 @@
 	if(icon_state == "mush5")
 		static_debris = list(/obj/item/natural/thorn=1, /obj/item/grown/log/tree/small = 1)
 	pixel_x += rand(8,-8)
+	var/static/list/loc_connections = list(COMSIG_ATOM_EXIT = PROC_REF(on_exit))
+	AddElement(/datum/element/connect_loc, loc_connections)
 
 /obj/structure/flora/shroom_tree/CanPass(atom/movable/mover, turf/target)
 	if(istype(mover) && (mover.pass_flags & PASSGRILLE))
@@ -694,12 +677,11 @@
 		return 0
 	return 1
 
-/obj/structure/flora/shroom_tree/CheckExit(atom/movable/mover as mob|obj, turf/target)
-	if(istype(mover) && (mover.pass_flags & PASSGRILLE))
-		return 1
-	if(get_dir(mover.loc, target) == dir)
-		return 0
-	return 1
+/obj/structure/flora/shroom_tree/proc/on_exit(datum/source, atom/movable/leaving, atom/new_location)
+	SIGNAL_HANDLER
+	if(get_dir(leaving.loc, new_location) == dir)
+		leaving.Bump(src)
+		return COMPONENT_ATOM_BLOCK_EXIT
 
 /obj/structure/flora/shroom_tree/fire_act(added, maxstacks)
 	if(added > 5)
@@ -709,7 +691,6 @@
 	var/obj/structure/S = new /obj/structure/table/wood/treestump/shroomstump(loc)
 	S.icon_state = "[icon_state]stump"
 	. = ..()
-
 
 /obj/structure/table/wood/treestump/shroomstump
 	name = "shroom stump"
